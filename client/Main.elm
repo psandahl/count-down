@@ -2,6 +2,8 @@ module Main exposing (main)
 
 import AnimationFrame
 import Array
+import Game
+import Game.Level as Level
 import Game.MeshStore as MeshStore
 import Html exposing (Html)
 import Task
@@ -25,6 +27,8 @@ init =
     ( { state = Null
       , textures = Array.empty
       , meshStore = MeshStore.init
+      , level = Level.init
+      , game = Nothing
       }
       -- Load the textures.
     , loadTextures
@@ -43,10 +47,10 @@ update msg model =
                     ( { model | state = Error "Can't load textures" }, Cmd.none )
 
         TimeTick ->
-            ( model, Cmd.none )
+            ( { model | game = Maybe.map Game.timeTick model.game }, Cmd.none )
 
         Animate diff ->
-            ( model, Cmd.none )
+            ( { model | game = Maybe.map (Game.animate diff) model.game }, Cmd.none )
 
 
 view : Model -> Html Msg

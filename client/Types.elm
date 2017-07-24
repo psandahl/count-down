@@ -4,41 +4,59 @@ module Types exposing (State(..), Model, Msg(..))
 -}
 
 import Array exposing (Array)
+import Game exposing (Game)
+import Game.Level exposing (Level)
 import Game.MeshStore exposing (MeshStore)
+import Time exposing (Time)
 import WebGL.Texture exposing (Error, Texture)
 
 
 {-| The application's runtime state.
 -}
-type State
+type
+    State
+    -- The state before things are initialized.
     = Null
-      -- ^ The state before things are initialized.
+      -- Initialization done. Ready for playing.
     | ReadyForPlay
-      -- ^ Initialization done. Ready for playing.
+      -- Ongoing game.
     | Playing
-      -- ^ Ongoing game.
+      -- The game is over.
     | GameOver
-      -- ^ The game is over.
+      -- Some catastrofic error.
     | Error String
 
 
 {-| The application's model.
 -}
 type alias Model =
-    { state : State
+    { -- The runtime state.
+      state : State
+
+    -- Cache of the textures needed for the counters.
     , textures : Array Texture
+
+    --  Cache of the meshes needed for the game.
     , meshStore : MeshStore
+
+    -- The level of the next game to play.
+    , level : Level
+
+    -- The ongoing game (if any).
+    , game : Maybe Game
     }
 
 
 {-| The application's message type.
 -}
-type Msg
+type
+    Msg
+    -- The requested textures are loaded.
     = TexturesLoaded (Result Error (List Texture))
-      -- ^ The requested textures are loaded.
+      -- TimeTick every second while in Playing state.
     | TimeTick
-      -- ^ TimeTick every second while in Playing state.
-    | Animate Float
+      -- Time difference in ms since the last animation event.
+    | Animate Time
 
 
 
