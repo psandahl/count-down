@@ -1,9 +1,11 @@
 module Main exposing (main)
 
+import AnimationFrame
 import Array
 import Game.MeshStore as MeshStore
 import Html exposing (Html)
 import Task
+import Time
 import Types exposing (State(..), Model, Msg(..))
 import WebGL.Texture as Texture
 
@@ -40,6 +42,12 @@ update msg model =
                 Err _ ->
                     ( { model | state = Error "Can't load textures" }, Cmd.none )
 
+        TimeTick ->
+            ( model, Cmd.none )
+
+        Animate diff ->
+            ( model, Cmd.none )
+
 
 view : Model -> Html Msg
 view model =
@@ -52,8 +60,17 @@ view model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    case model.state of
+        -- The subscriptions are only made while in the Playing state.
+        Playing ->
+            Sub.batch
+                [ Time.every Time.second (always TimeTick)
+                , AnimationFrame.diffs Animate
+                ]
+
+        _ ->
+            Sub.none
 
 
 {-| Attempt load all the needed textures from the server.
