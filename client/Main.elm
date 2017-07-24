@@ -1,10 +1,11 @@
 module Main exposing (main)
 
-{-| foo
--}
-
+import Array
+import Game.MeshStore as MeshStore
 import Html exposing (Html)
-import Types exposing (Model, Msg)
+import Task
+import Types exposing (State(..), Model, Msg(..))
+import WebGL.Texture as Texture
 
 
 main : Program Never Model Msg
@@ -19,19 +20,48 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { dummy = 1 }, Cmd.none )
+    ( { state = Null
+      , textures = Array.empty
+      , meshStore = MeshStore.init
+      }
+      -- Load the textures.
+    , loadTextures
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update _ model =
-    ( model, Cmd.none )
+update msg model =
+    case msg of
+        TexturesLoaded result ->
+            case result of
+                Ok ts ->
+                    ( { model | textures = Array.fromList ts, state = ReadyForPlay }, Cmd.none )
+
+                Err _ ->
+                    ( { model | state = Error "Can't load textures" }, Cmd.none )
 
 
 view : Model -> Html Msg
-view _ =
-    Html.text "hej"
+view model =
+    case model.state of
+        Error err ->
+            Html.text err
+
+        _ ->
+            Html.text "hej"
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
+
+
+{-| Attempt load all the needed textures from the server.
+-}
+loadTextures : Cmd Msg
+loadTextures =
+    Task.attempt TexturesLoaded <|
+        Task.sequence <|
+            List.map Texture.load
+                [ "texture/ten.png"
+                ]
