@@ -1,7 +1,7 @@
 module Game exposing (Game, new, timeTick, animate, render)
 
 import Array exposing (Array)
-import Game.Board exposing (Board, OuterRadius(..), InnerRadius(..))
+import Game.Board exposing (Board, BoardWidth(..), InnerWidth(..))
 import Game.Board as Board
 import Game.Camera exposing (Camera)
 import Game.Camera as Camera
@@ -28,7 +28,7 @@ new : Level -> MeshStore -> Array Texture -> Game
 new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
     , camera = Camera.init
-    , board = Board.init (OuterRadius 10) (InnerRadius 3) meshStore.boardMesh
+    , board = Board.init (BoardWidth 10) (InnerWidth 5) meshStore.boardMesh
     }
 
 

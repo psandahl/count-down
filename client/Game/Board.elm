@@ -2,8 +2,8 @@ module Game.Board
     exposing
         ( Vertex
         , Board
-        , OuterRadius(..)
-        , InnerRadius(..)
+        , BoardWidth(..)
+        , InnerWidth(..)
         , init
         , render
         , makeMesh
@@ -31,30 +31,30 @@ type alias Vertex =
 type alias Board =
     { mesh : Mesh Vertex
     , modelMatrix : Mat4
-    , innerRadius : InnerRadius
+    , innerRadius : Float
     }
 
 
-{-| Outer radius of the board. This is a scale factor, and it will scale the
+{-| Width of the board. This is a scale factor, and it will scale the
 board in x, y and z dimensions equally. Shall have no effect on y though.
 -}
-type OuterRadius
-    = OuterRadius Float
+type BoardWidth
+    = BoardWidth Float
 
 
-{-| Inner radius of the playing field on the board.
+{-| Inner width of the playing field on the board.
 -}
-type InnerRadius
-    = InnerRadius Float
+type InnerWidth
+    = InnerWidth Float
 
 
 {-| Create a new Board. Use an already made mesh from the store.
 -}
-init : OuterRadius -> InnerRadius -> Mesh Vertex -> Board
-init (OuterRadius r) innerRadius mesh =
+init : BoardWidth -> InnerWidth -> Mesh Vertex -> Board
+init (BoardWidth outer) (InnerWidth inner) mesh =
     { mesh = mesh
-    , modelMatrix = Mat.makeScale3 r r r
-    , innerRadius = innerRadius
+    , modelMatrix = Mat.makeScale3 outer outer outer
+    , innerRadius = inner / 2 -- Just use the radius.
     }
 
 
@@ -64,7 +64,13 @@ render pMatrix vMatrix board =
         mvpMatrix =
             Mat.mul pMatrix <| Mat.mul vMatrix board.modelMatrix
     in
-        GL.entity vertexShader fragmentShader board.mesh { mvpMatrix = mvpMatrix }
+        GL.entity vertexShader
+            fragmentShader
+            board.mesh
+            { mvpMatrix = mvpMatrix
+            , modelMatrix = board.modelMatrix
+            , innerRadius = board.innerRadius
+            }
 
 
 {-| Make a unit sized board with center at origo.
@@ -84,7 +90,9 @@ makeMesh =
 
 vertexShader :
     Shader Vertex
-        { mvpMatrix : Mat4
+        { uniforms
+            | mvpMatrix : Mat4
+            , modelMatrix : Mat4
         }
         { vPosition : Vec3
         }
@@ -93,12 +101,13 @@ vertexShader =
         attribute vec3 position;
 
         uniform mat4 mvpMatrix;
+        uniform mat4 modelMatrix;
 
         varying vec3 vPosition;
 
         void main()
         {
-            vPosition = position;
+            vPosition = (modelMatrix * vec4(position, 1.0)).xyz;
             gl_Position = mvpMatrix * vec4(position, 1.0);
         }
     |]
@@ -106,17 +115,37 @@ vertexShader =
 
 fragmentShader :
     Shader {}
-        uniforms
+        { uniforms
+            | innerRadius : Float
+        }
         { vPosition : Vec3
         }
 fragmentShader =
     [glsl|
         precision mediump float;
 
+        uniform float innerRadius;
+
         varying vec3 vPosition;
+
+        const float thickness = 0.5;
 
         void main()
         {
-            gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+            float x = abs(vPosition.x);
+            float z = abs(vPosition.z);
+
+            if (x >= innerRadius && x < innerRadius + thickness && z < innerRadius + thickness)
+            {
+                gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+            }
+            else if (z >= innerRadius && z < innerRadius + thickness && x < innerRadius)
+            {
+                gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+            }
+            else
+            {
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+            }
         }
     |]
