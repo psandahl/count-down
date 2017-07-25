@@ -6,6 +6,7 @@ import Game
 import Game.Level as Level
 import Game.MeshStore as MeshStore
 import Html exposing (Html)
+import Html.Events as Events
 import Task
 import Time
 import Types exposing (State(..), Model, Msg(..))
@@ -41,16 +42,36 @@ update msg model =
         TexturesLoaded result ->
             case result of
                 Ok ts ->
-                    ( { model | textures = Array.fromList ts, state = ReadyForPlay }, Cmd.none )
+                    ( { model
+                        | textures = Array.fromList ts
+                        , state = ReadyForPlay
+                      }
+                    , Cmd.none
+                    )
 
                 Err _ ->
-                    ( { model | state = Error "Can't load textures" }, Cmd.none )
+                    ( { model | state = Error "Can't load textures" }
+                    , Cmd.none
+                    )
 
         TimeTick ->
-            ( { model | game = Maybe.map Game.timeTick model.game }, Cmd.none )
+            ( { model | game = Maybe.map Game.timeTick model.game }
+            , Cmd.none
+            )
 
         Animate diff ->
-            ( { model | game = Maybe.map (Game.animate diff) model.game }, Cmd.none )
+            ( { model | game = Maybe.map (Game.animate diff) model.game }
+            , Cmd.none
+            )
+
+        StartNewGame ->
+            ( { model
+                | game = Just <| Game.new model.level model.meshStore model.textures
+                , level = Level.nextLevel model.level
+                , state = Playing
+              }
+            , Cmd.none
+            )
 
 
 view : Model -> Html Msg
@@ -59,8 +80,19 @@ view model =
         Error err ->
             Html.text err
 
+        ReadyForPlay ->
+            Html.button [ Events.onClick StartNewGame ] [ Html.text "Start new game" ]
+
+        Playing ->
+            case model.game of
+                Just game ->
+                    Game.render game
+
+                Nothing ->
+                    Html.text "Should never happen ..."
+
         _ ->
-            Html.text "hej"
+            Html.text "Waiting ..."
 
 
 subscriptions : Model -> Sub Msg

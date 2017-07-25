@@ -57,6 +57,8 @@ type
     | TimeTick
       -- Time difference in ms since the last animation event.
     | Animate Time
+      -- Request to start a new game.
+    | StartNewGame
 
 
 

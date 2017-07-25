@@ -1,6 +1,7 @@
 module Game exposing (Game, new, timeTick, animate, render)
 
 import Array exposing (Array)
+import Game.Level exposing (Level)
 import Game.MeshStore exposing (MeshStore)
 import Html exposing (Html)
 import Html
@@ -13,7 +14,7 @@ type alias Game =
     }
 
 
-new : Int -> MeshStore -> Array Texture -> Game
+new : Level -> MeshStore -> Array Texture -> Game
 new level meshStore textures =
     { dummy = 0 }
 
