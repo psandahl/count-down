@@ -87,6 +87,8 @@ update msg model =
         MouseReleased position ->
             ( { model
                 | trackingMouse = False
+                , game =
+                    Maybe.map (Game.mouseMoved model.mousePosition position) model.game
                 , mousePosition = position
               }
             , Cmd.none
@@ -94,7 +96,9 @@ update msg model =
 
         MouseMoved position ->
             ( { model
-                | mousePosition = position
+                | game =
+                    Maybe.map (Game.mouseMoved model.mousePosition position) model.game
+                , mousePosition = position
               }
             , Cmd.none
             )

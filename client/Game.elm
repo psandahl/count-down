@@ -1,4 +1,4 @@
-module Game exposing (Game, new, timeTick, animate, render)
+module Game exposing (Game, new, timeTick, animate, mouseMoved, render)
 
 import Array exposing (Array)
 import Game.Board exposing (Board, BoardWidth(..), InnerWidth(..))
@@ -12,6 +12,7 @@ import Html
 import Html.Attributes as Attr
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
+import Mouse exposing (Position)
 import Time exposing (Time)
 import WebGL as GL
 import WebGL.Texture exposing (Texture)
@@ -40,6 +41,13 @@ timeTick game =
 animate : Time -> Game -> Game
 animate time game =
     game
+
+
+mouseMoved : Position -> Position -> Game -> Game
+mouseMoved from to game =
+    { game
+        | camera = Camera.mouseMoved from to game.camera
+    }
 
 
 render : Game -> Html msg
