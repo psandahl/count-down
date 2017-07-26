@@ -7,6 +7,7 @@ import Array exposing (Array)
 import Game exposing (Game)
 import Game.Level exposing (Level)
 import Game.MeshStore exposing (MeshStore)
+import Mouse exposing (Position)
 import Time exposing (Time)
 import WebGL.Texture exposing (Error, Texture)
 
@@ -32,6 +33,12 @@ type
 type alias Model =
     { -- The runtime state.
       state : State
+
+    -- Are we tracking mouse moves?
+    , trackingMouse : Bool
+
+    -- The latest known mouse position.
+    , mousePosition : Position
 
     -- Cache of the textures needed for the counters.
     , textures : Array Texture
@@ -59,6 +66,12 @@ type
     | Animate Time
       -- Request to start a new game.
     | StartNewGame
+      -- The mouse button is pressed.
+    | MousePressed Position
+      -- The mouse button is released.
+    | MouseReleased Position
+      -- The mouse is moved.
+    | MouseMoved Position
 
 
 

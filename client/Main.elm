@@ -7,6 +7,7 @@ import Game.Level as Level
 import Game.MeshStore as MeshStore
 import Html exposing (Html)
 import Html.Events as Events
+import Mouse
 import Task
 import Time
 import Types exposing (State(..), Model, Msg(..))
@@ -26,6 +27,8 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { state = Null
+      , trackingMouse = False
+      , mousePosition = { x = 0, y = 0 }
       , textures = Array.empty
       , meshStore = MeshStore.init
       , level = Level.init
@@ -73,6 +76,29 @@ update msg model =
             , Cmd.none
             )
 
+        MousePressed position ->
+            ( { model
+                | trackingMouse = True
+                , mousePosition = position
+              }
+            , Cmd.none
+            )
+
+        MouseReleased position ->
+            ( { model
+                | trackingMouse = False
+                , mousePosition = position
+              }
+            , Cmd.none
+            )
+
+        MouseMoved position ->
+            ( { model
+                | mousePosition = position
+              }
+            , Cmd.none
+            )
+
 
 view : Model -> Html Msg
 view model =
@@ -81,7 +107,13 @@ view model =
             Html.text err
 
         ReadyForPlay ->
-            Html.button [ Events.onClick StartNewGame ] [ Html.text "Start new game" ]
+            Html.div []
+                [ Html.button [ Events.onClick StartNewGame ] [ Html.text "Start new game" ]
+                , Html.p [] []
+                , Html.text <| "Tracking: " ++ toString model.trackingMouse
+                , Html.p [] []
+                , Html.text <| "Position: " ++ toString model.mousePosition
+                ]
 
         Playing ->
             case model.game of
@@ -97,16 +129,25 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case model.state of
-        -- The subscriptions are only made while in the Playing state.
-        Playing ->
-            Sub.batch
+    let
+        animationSubs =
+            if model.state == Playing then
                 [ Time.every Time.second (always TimeTick)
                 , AnimationFrame.diffs Animate
                 ]
+            else
+                []
 
-        _ ->
-            Sub.none
+        mbSubs =
+            [ Mouse.downs MousePressed, Mouse.ups MouseReleased ]
+
+        mvSubs =
+            if model.trackingMouse then
+                [ Mouse.moves MouseMoved ]
+            else
+                []
+    in
+        Sub.batch <| animationSubs ++ mbSubs ++ mvSubs
 
 
 {-| Attempt load all the needed textures from the server.
