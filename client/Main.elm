@@ -113,10 +113,6 @@ view model =
         ReadyForPlay ->
             Html.div []
                 [ Html.button [ Events.onClick StartNewGame ] [ Html.text "Start new game" ]
-                , Html.p [] []
-                , Html.text <| "Tracking: " ++ toString model.trackingMouse
-                , Html.p [] []
-                , Html.text <| "Position: " ++ toString model.mousePosition
                 ]
 
         Playing ->
@@ -133,25 +129,29 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    let
-        animationSubs =
-            if model.state == Playing then
-                [ Time.every Time.second (always TimeTick)
-                , AnimationFrame.diffs Animate
-                ]
-            else
-                []
+    case model.state of
+        Playing ->
+            let
+                animationSubs =
+                    [ Time.every Time.second (always TimeTick)
+                    , AnimationFrame.diffs Animate
+                    ]
 
-        mbSubs =
-            [ Mouse.downs MousePressed, Mouse.ups MouseReleased ]
+                mouseButtonSubs =
+                    [ Mouse.downs MousePressed
+                    , Mouse.ups MouseReleased
+                    ]
 
-        mvSubs =
-            if model.trackingMouse then
-                [ Mouse.moves MouseMoved ]
-            else
-                []
-    in
-        Sub.batch <| animationSubs ++ mbSubs ++ mvSubs
+                mouseMoveSubs =
+                    if model.trackingMouse then
+                        [ Mouse.moves MouseMoved ]
+                    else
+                        []
+            in
+                Sub.batch <| animationSubs ++ mouseButtonSubs ++ mouseMoveSubs
+
+        _ ->
+            Sub.none
 
 
 {-| Attempt load all the needed textures from the server.
