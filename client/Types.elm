@@ -7,6 +7,7 @@ import Array exposing (Array)
 import Game exposing (Game)
 import Game.Level exposing (Level)
 import Game.MeshStore exposing (MeshStore)
+import Keys exposing (Key)
 import Mouse exposing (Position)
 import Time exposing (Time)
 import WebGL.Texture exposing (Error, Texture)
@@ -72,6 +73,10 @@ type
     | MouseReleased Position
       -- The mouse is moved.
     | MouseMoved Position
+      -- A key on the keyboard is pressed.
+    | KeyPressed Key
+      -- A key on the keyboard is released.
+    | KeyReleased Key
 
 
 

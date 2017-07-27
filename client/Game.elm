@@ -1,4 +1,14 @@
-module Game exposing (Game, new, timeTick, animate, mouseMoved, render)
+module Game
+    exposing
+        ( Game
+        , new
+        , timeTick
+        , animate
+        , mouseMoved
+        , keyPressed
+        , keyReleased
+        , render
+        )
 
 import Array exposing (Array)
 import Game.Board exposing (Board, BoardWidth(..), InnerWidth(..))
@@ -10,6 +20,7 @@ import Game.MeshStore exposing (MeshStore)
 import Html exposing (Html)
 import Html
 import Html.Attributes as Attr
+import Keys exposing (Key(..))
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Mouse exposing (Position)
@@ -48,6 +59,16 @@ mouseMoved from to game =
     { game
         | camera = Camera.mouseMoved from to game.camera
     }
+
+
+keyPressed : Key -> Game -> Game
+keyPressed key game =
+    game
+
+
+keyReleased : Key -> Game -> Game
+keyReleased key game =
+    game
 
 
 render : Game -> Html msg

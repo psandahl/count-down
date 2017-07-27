@@ -7,6 +7,8 @@ import Game.Level as Level
 import Game.MeshStore as MeshStore
 import Html exposing (Html)
 import Html.Events as Events
+import Keyboard
+import Keys
 import Mouse
 import Task
 import Time
@@ -103,6 +105,20 @@ update msg model =
             , Cmd.none
             )
 
+        KeyPressed key ->
+            ( { model
+                | game = Maybe.map (Game.keyPressed key) model.game
+              }
+            , Cmd.none
+            )
+
+        KeyReleased key ->
+            ( { model
+                | game = Maybe.map (Game.keyReleased key) model.game
+              }
+            , Cmd.none
+            )
+
 
 view : Model -> Html Msg
 view model =
@@ -147,8 +163,17 @@ subscriptions model =
                         [ Mouse.moves MouseMoved ]
                     else
                         []
+
+                keyboardSubs =
+                    [ Keyboard.downs <| KeyPressed << Keys.fromKeyCode
+                    , Keyboard.ups <| KeyReleased << Keys.fromKeyCode
+                    ]
             in
-                Sub.batch <| animationSubs ++ mouseButtonSubs ++ mouseMoveSubs
+                Sub.batch <|
+                    animationSubs
+                        ++ mouseButtonSubs
+                        ++ mouseMoveSubs
+                        ++ keyboardSubs
 
         _ ->
             Sub.none
