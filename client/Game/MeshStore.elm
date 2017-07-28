@@ -3,12 +3,14 @@ module Game.MeshStore exposing (MeshStore, init)
 {-| The MeshStore is a cache of already created meshes.
 -}
 
+import Game.Ball as Ball
 import Game.Board as Board
 import WebGL exposing (Mesh)
 
 
 type alias MeshStore =
-    { boardMesh : Mesh Board.Vertex
+    { ballMesh : Mesh Ball.Vertex
+    , boardMesh : Mesh Board.Vertex
     }
 
 
@@ -16,5 +18,6 @@ type alias MeshStore =
 -}
 init : MeshStore
 init =
-    { boardMesh = Board.makeMesh
+    { ballMesh = Ball.makeMesh
+    , boardMesh = Board.makeMesh
     }

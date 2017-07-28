@@ -11,6 +11,8 @@ module Game
         )
 
 import Array exposing (Array)
+import Game.Ball exposing (Ball, Role(..))
+import Game.Ball as Ball
 import Game.Board exposing (Board, BoardWidth(..), InnerWidth(..))
 import Game.Board as Board
 import Game.Camera exposing (Camera)
@@ -25,6 +27,7 @@ import Html.Attributes as Attr
 import Keys exposing (Key(..))
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
+import Math.Vector3 as Vec
 import Mouse exposing (Position)
 import Time exposing (Time)
 import WebGL as GL
@@ -35,6 +38,7 @@ type alias Game =
     { pMatrix : Mat4
     , camera : Camera
     , board : Board
+    , ball : Ball
     , userInput : UserInput
     }
 
@@ -44,6 +48,7 @@ new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
     , camera = Camera.init
     , board = Board.init (BoardWidth 10) (InnerWidth 5) meshStore.boardMesh
+    , ball = Ball.init (Vec.vec3 0 0 0) Original meshStore.ballMesh
     , userInput = UserInput.init
     }
 
@@ -105,6 +110,7 @@ render game =
         , Attr.width width
         ]
         [ Board.render game.pMatrix game.camera.vMatrix game.board
+        , Ball.render game.pMatrix game.camera.vMatrix game.ball
         ]
 
 
