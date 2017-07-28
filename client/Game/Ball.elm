@@ -1,4 +1,4 @@
-module Game.Ball exposing (Ball, Vertex, Role(..), init, render, makeMesh)
+module Game.Ball exposing (Ball, Vertex, Role(..), init, goLeft, render, makeMesh)
 
 import Math.Vector3 exposing (Vec3)
 import Math.Vector3 as Vec
@@ -44,6 +44,21 @@ init position role mesh =
     , position = adjustPosition role position
     , modelMatrix = Mat.makeTranslate <| adjustPosition role position
     }
+
+
+goLeft : Float -> Ball -> Ball
+goLeft amount ball =
+    let
+        position =
+            ball.position
+
+        newPosition =
+            Vec.setX (Vec.getX position - amount) position
+    in
+        { ball
+            | position = newPosition
+            , modelMatrix = Mat.makeTranslate newPosition
+        }
 
 
 adjustPosition : Role -> Vec3 -> Vec3

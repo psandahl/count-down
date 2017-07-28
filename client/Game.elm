@@ -62,6 +62,7 @@ animate : Time -> Game -> Game
 animate time game =
     { game
         | camera = Camera.animate time game.userInput game.camera
+        , ball = moveBall time game
     }
 
 
@@ -75,6 +76,9 @@ mouseMoved from to game =
 keyPressed : Key -> Game -> Game
 keyPressed key game =
     case key of
+        Left ->
+            { game | userInput = UserInput.setGoLeft True game.userInput }
+
         Plus ->
             { game | userInput = UserInput.setZoomIn True game.userInput }
 
@@ -88,6 +92,9 @@ keyPressed key game =
 keyReleased : Key -> Game -> Game
 keyReleased key game =
     case key of
+        Left ->
+            { game | userInput = UserInput.setGoLeft False game.userInput }
+
         Plus ->
             { game | userInput = UserInput.setZoomIn False game.userInput }
 
@@ -112,6 +119,14 @@ render game =
         [ Board.render game.pMatrix game.camera.vMatrix game.board
         , Ball.render game.pMatrix game.camera.vMatrix game.ball
         ]
+
+
+moveBall : Time -> Game -> Ball
+moveBall time game =
+    if game.userInput.goLeft then
+        Ball.goLeft time game.ball
+    else
+        game.ball
 
 
 aspectRatio : Float
