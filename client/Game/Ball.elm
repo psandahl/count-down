@@ -14,6 +14,7 @@ type alias Ball =
     { mesh : Mesh Vertex
     , role : Role
     , position : Vec3
+    , scaleMatrix : Mat4
     , modelMatrix : Mat4
     }
 
@@ -39,11 +40,16 @@ type Role
 -}
 init : Vec3 -> Role -> Mesh Vertex -> Ball
 init position role mesh =
-    { mesh = mesh
-    , role = role
-    , position = adjustPosition role position
-    , modelMatrix = Mat.makeTranslate <| adjustPosition role position
-    }
+    let
+        scaleMatrix =
+            Mat.makeScale3 0.5 0.5 0.5
+    in
+        { mesh = mesh
+        , role = role
+        , position = adjustPosition role position
+        , scaleMatrix = scaleMatrix
+        , modelMatrix = Mat.mul scaleMatrix (Mat.makeTranslate <| adjustPosition role position)
+        }
 
 
 goLeft : Float -> Ball -> Ball
@@ -57,7 +63,7 @@ goLeft amount ball =
     in
         { ball
             | position = newPosition
-            , modelMatrix = Mat.makeTranslate newPosition
+            , modelMatrix = Mat.mul ball.scaleMatrix (Mat.makeTranslate newPosition)
         }
 
 
@@ -88,7 +94,7 @@ render pMatrix vMatrix ball =
 -}
 makeMesh : Mesh Vertex
 makeMesh =
-    Surface.surface Type.Sphere 15 15
+    Surface.surface Type.Sphere 7 7
 
 
 {-| Vertex shader for the Ball.
