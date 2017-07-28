@@ -35,6 +35,7 @@ init =
       , meshStore = MeshStore.init
       , level = Level.init
       , game = Nothing
+      , timeDiff = 0
       }
       -- Load the textures.
     , loadTextures
@@ -65,7 +66,10 @@ update msg model =
             )
 
         Animate diff ->
-            ( { model | game = Maybe.map (Game.animate diff) model.game }
+            ( { model
+                | game = Maybe.map (Game.animate diff) model.game
+                , timeDiff = diff
+              }
             , Cmd.none
             )
 
@@ -134,7 +138,11 @@ view model =
         Playing ->
             case model.game of
                 Just game ->
-                    Game.render game
+                    Html.div []
+                        [ Game.render game
+                        , Html.p [] []
+                        , Html.text <| toString model.timeDiff
+                        ]
 
                 Nothing ->
                     Html.text "Should never happen ..."
@@ -150,7 +158,7 @@ subscriptions model =
             let
                 animationSubs =
                     [ Time.every Time.second (always TimeTick)
-                    , AnimationFrame.diffs Animate
+                    , AnimationFrame.diffs <| Animate << Time.inSeconds
                     ]
 
                 mouseButtonSubs =

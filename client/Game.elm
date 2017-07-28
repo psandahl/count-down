@@ -17,6 +17,8 @@ import Game.Camera exposing (Camera)
 import Game.Camera as Camera
 import Game.Level exposing (Level)
 import Game.MeshStore exposing (MeshStore)
+import Game.UserInput exposing (UserInput)
+import Game.UserInput as UserInput
 import Html exposing (Html)
 import Html
 import Html.Attributes as Attr
@@ -33,6 +35,7 @@ type alias Game =
     { pMatrix : Mat4
     , camera : Camera
     , board : Board
+    , userInput : UserInput
     }
 
 
@@ -41,6 +44,7 @@ new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
     , camera = Camera.init
     , board = Board.init (BoardWidth 10) (InnerWidth 5) meshStore.boardMesh
+    , userInput = UserInput.init
     }
 
 
@@ -51,7 +55,9 @@ timeTick game =
 
 animate : Time -> Game -> Game
 animate time game =
-    game
+    { game
+        | camera = Camera.animate time game.userInput game.camera
+    }
 
 
 mouseMoved : Position -> Position -> Game -> Game
@@ -63,12 +69,28 @@ mouseMoved from to game =
 
 keyPressed : Key -> Game -> Game
 keyPressed key game =
-    game
+    case key of
+        Plus ->
+            { game | userInput = UserInput.setZoomIn True game.userInput }
+
+        Minus ->
+            { game | userInput = UserInput.setZoomOut True game.userInput }
+
+        SomethingElse ->
+            game
 
 
 keyReleased : Key -> Game -> Game
 keyReleased key game =
-    game
+    case key of
+        Plus ->
+            { game | userInput = UserInput.setZoomIn False game.userInput }
+
+        Minus ->
+            { game | userInput = UserInput.setZoomOut False game.userInput }
+
+        SomethingElse ->
+            game
 
 
 render : Game -> Html msg

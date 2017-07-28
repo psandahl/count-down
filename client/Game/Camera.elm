@@ -1,10 +1,12 @@
-module Game.Camera exposing (Camera, init, mouseMoved)
+module Game.Camera exposing (Camera, init, animate, mouseMoved)
 
+import Game.UserInput exposing (UserInput)
 import Math.Vector3 exposing (Vec3, vec3)
 import Math.Vector3 as Vec
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Mouse exposing (Position)
+import Time exposing (Time)
 
 
 {-| The Camera.
@@ -39,7 +41,7 @@ init =
     let
         settings =
             { baseVector = up
-            , magnitude = 20
+            , magnitude = clampMagnitude 20
             , yaw = 0
             , pitch = clampPitch 65
             }
@@ -47,6 +49,39 @@ init =
         { settings = settings
         , vMatrix = makeMatrix settings
         }
+
+
+{-| Animate from the UserInput and the time diff. The camera will use the
+animate event to zoom in and zoom out.
+-}
+animate : Time -> UserInput -> Camera -> Camera
+animate time userInput camera =
+    if userInput.zoomIn || userInput.zoomOut then
+        let
+            zi =
+                if userInput.zoomIn then
+                    -time * zoomSpeed
+                else
+                    0
+
+            zo =
+                if userInput.zoomOut then
+                    time * zoomSpeed
+                else
+                    0
+
+            settings =
+                camera.settings
+
+            newSettings =
+                { settings | magnitude = clampMagnitude <| settings.magnitude + zi + zo }
+        in
+            { camera
+                | settings = newSettings
+                , vMatrix = makeMatrix newSettings
+            }
+    else
+        camera
 
 
 {-| Handle a mouse move event. Repositioning the camera.
@@ -89,11 +124,23 @@ rotationSpeed =
     1000
 
 
+zoomSpeed : Float
+zoomSpeed =
+    5
+
+
 {-| Clamp the pitch angle. The camera must never be under the surface.
 -}
 clampPitch : Float -> Float
 clampPitch =
     clamp 10 80
+
+
+{-| Clamp the magnitude.
+-}
+clampMagnitude : Float -> Float
+clampMagnitude =
+    clamp 5 50
 
 
 makeMatrix : Settings -> Mat4

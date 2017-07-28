@@ -52,6 +52,9 @@ type alias Model =
 
     -- The ongoing game (if any).
     , game : Maybe Game
+
+    -- Store the timediff for the last frame. For debug etc.
+    , timeDiff : Float
     }
 
 
@@ -63,7 +66,7 @@ type
     = TexturesLoaded (Result Error (List Texture))
       -- TimeTick every second while in Playing state.
     | TimeTick
-      -- Time difference in ms since the last animation event.
+      -- Time difference in fractions of s since the last animation event.
     | Animate Time
       -- Request to start a new game.
     | StartNewGame
