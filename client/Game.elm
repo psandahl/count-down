@@ -11,8 +11,6 @@ module Game
         )
 
 import Array exposing (Array)
-import Game.Ball exposing (Ball, Role(..))
-import Game.Ball as Ball
 import Game.Board exposing (Board, BoardWidth(..), InnerWidth(..))
 import Game.Board as Board
 import Game.Camera exposing (Camera)
@@ -38,7 +36,6 @@ type alias Game =
     { pMatrix : Mat4
     , camera : Camera
     , board : Board
-    , ball : Ball
     , userInput : UserInput
     }
 
@@ -48,7 +45,6 @@ new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
     , camera = Camera.init
     , board = Board.init (BoardWidth 10) (InnerWidth 5) meshStore.boardMesh
-    , ball = Ball.init (Vec.vec3 0 0 0) Original meshStore.ballMesh
     , userInput = UserInput.init
     }
 
@@ -62,7 +58,6 @@ animate : Time -> Game -> Game
 animate time game =
     { game
         | camera = Camera.animate time game.userInput game.camera
-        , ball = moveBall time game
     }
 
 
@@ -117,16 +112,7 @@ render game =
         , Attr.width width
         ]
         [ Board.render game.pMatrix game.camera.vMatrix game.board
-        , Ball.render game.pMatrix game.camera.vMatrix game.ball
         ]
-
-
-moveBall : Time -> Game -> Ball
-moveBall time game =
-    if game.userInput.goLeft then
-        Ball.goLeft time game.ball
-    else
-        game.ball
 
 
 aspectRatio : Float
