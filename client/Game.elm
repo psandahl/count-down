@@ -48,7 +48,7 @@ new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
     , camera = Camera.init
     , board = Board.init (BoardWidth 10) (InnerWidth 5) meshStore.boardMesh
-    , marker = Marker.init meshStore.markerMesh
+    , marker = Marker.init ( 0, 0 ) meshStore.markerMesh
     , userInput = UserInput.init
     }
 
@@ -71,7 +71,11 @@ animate time game =
 moveMarker : Time -> Game -> Marker
 moveMarker time game =
     if game.userInput.goLeft then
-        Marker.goLeft time game.marker
+        let
+            ( x, z ) =
+                Marker.position game.marker
+        in
+            Marker.moveTo ( x - time, z ) game.marker
     else
         game.marker
 

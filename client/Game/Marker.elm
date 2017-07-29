@@ -4,42 +4,57 @@ module Game.Marker
         , Marker
         , init
         , yaw
-        , goLeft
+        , moveTo
+        , position
         , render
         , makeMesh
         )
 
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
-import Math.Vector3 exposing (Vec3, vec3, normalize, getY, setY, getX, setX)
+import Math.Vector3 exposing (Vec3, vec3)
+import Math.Vector3 as Vec
 import Time exposing (Time)
 import WebGL exposing (Mesh, Entity, Shader)
 import WebGL as GL
 
 
+{-| Vertex type for the marker. Position and normal.
+-}
 type alias Vertex =
     { position : Vec3
     , normal : Vec3
     }
 
 
+{-| The Marker.
+-}
 type alias Marker =
     { mesh : Mesh Vertex
     , position : Vec3
-    , pitchMatrix : Mat4
+    , pitchMatrix : Mat4 -- Pitch matrix is used for flipping the pyramid.
     , yawAngle : Float
     }
 
 
-init : Mesh Vertex -> Marker
-init mesh =
+{-| Initialize the Marker, with an x, z position and a mesh from the store.
+-}
+init : ( Float, Float ) -> Mesh Vertex -> Marker
+init ( x, z ) mesh =
     { mesh = mesh
-    , position = vec3 0 0 0
+    , position = vec3 x 0 z
     , pitchMatrix = Mat.makeRotate (degrees 180) (vec3 1 0 0)
     , yawAngle = 0
     }
 
 
+
+{- yaw and moveTo are both animate events. -}
+
+
+{-| Yaw the marker proportional to the time. Matrix handling is made at
+next render.
+-}
 yaw : Time -> Marker -> Marker
 yaw time marker =
     { marker
@@ -47,13 +62,23 @@ yaw time marker =
     }
 
 
-goLeft : Float -> Marker -> Marker
-goLeft amount marker =
+{-| Move the marker to the new position. Matrix handling is made at
+next render.
+-}
+moveTo : ( Float, Float ) -> Marker -> Marker
+moveTo ( x, z ) marker =
     let
-        x =
-            getX marker.position - amount
+        newPosition =
+            vec3 x (Vec.getY marker.position) z
     in
-        { marker | position = setX x marker.position }
+        { marker | position = newPosition }
+
+
+{-| Get the current position of the Marker.
+-}
+position : Marker -> ( Float, Float )
+position marker =
+    ( Vec.getX marker.position, Vec.getZ marker.position )
 
 
 render : Mat4 -> Mat4 -> Marker -> Entity
@@ -85,9 +110,9 @@ adjustHeight : Float -> Vec3 -> Vec3
 adjustHeight amount vec =
     let
         y =
-            amount + getY vec
+            amount + Vec.getY vec
     in
-        setY y vec
+        Vec.setY y vec
 
 
 yawSpeed : Float
@@ -173,22 +198,22 @@ backRight =
 
 frontNormal : Vec3
 frontNormal =
-    normalize <| vec3 0 2 1
+    Vec.normalize <| vec3 0 2 1
 
 
 leftNormal : Vec3
 leftNormal =
-    normalize <| vec3 -1 2 0
+    Vec.normalize <| vec3 -1 2 0
 
 
 rightNormal : Vec3
 rightNormal =
-    normalize <| vec3 1 2 0
+    Vec.normalize <| vec3 1 2 0
 
 
 backNormal : Vec3
 backNormal =
-    normalize <| vec3 0 2 -1
+    Vec.normalize <| vec3 0 2 -1
 
 
 bottomNormal : Vec3
