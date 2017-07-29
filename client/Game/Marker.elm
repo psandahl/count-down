@@ -1,8 +1,17 @@
-module Game.Marker exposing (Vertex, Marker, init, yaw, render, makeMesh)
+module Game.Marker
+    exposing
+        ( Vertex
+        , Marker
+        , init
+        , yaw
+        , goLeft
+        , render
+        , makeMesh
+        )
 
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
-import Math.Vector3 exposing (Vec3, vec3, normalize, getY, setY)
+import Math.Vector3 exposing (Vec3, vec3, normalize, getY, setY, getX, setX)
 import Time exposing (Time)
 import WebGL exposing (Mesh, Entity, Shader)
 import WebGL as GL
@@ -36,6 +45,15 @@ yaw time marker =
     { marker
         | yawAngle = marker.yawAngle + time * yawSpeed
     }
+
+
+goLeft : Float -> Marker -> Marker
+goLeft amount marker =
+    let
+        x =
+            getX marker.position - amount
+    in
+        { marker | position = setX x marker.position }
 
 
 render : Mat4 -> Mat4 -> Marker -> Entity

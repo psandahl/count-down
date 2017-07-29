@@ -64,8 +64,16 @@ animate : Time -> Game -> Game
 animate time game =
     { game
         | camera = Camera.animate time game.userInput game.camera
-        , marker = Marker.yaw time game.marker
+        , marker = Marker.yaw time <| moveMarker time game
     }
+
+
+moveMarker : Time -> Game -> Marker
+moveMarker time game =
+    if game.userInput.goLeft then
+        Marker.goLeft time game.marker
+    else
+        game.marker
 
 
 mouseMoved : Position -> Position -> Game -> Game
