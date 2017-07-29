@@ -58,10 +58,13 @@ timeTick game =
     game
 
 
+{-| Take care of the animate event. Animate subcomponents.
+-}
 animate : Time -> Game -> Game
 animate time game =
     { game
         | camera = Camera.animate time game.userInput game.camera
+        , marker = Marker.yaw time game.marker
     }
 
 
