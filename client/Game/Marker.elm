@@ -268,6 +268,9 @@ vertexShader =
     |]
 
 
+{-| The fragment shader for the Marker. Take in varyings and the light direction.
+Other lightning stuff is hard coded in the shader.
+-}
 fragmentShader :
     Shader {}
         { uniforms
