@@ -84,14 +84,20 @@ position marker =
 render : Mat4 -> Mat4 -> Marker -> Entity
 render pMatrix vMatrix marker =
     let
+        mvMatrix =
+            Mat.mul vMatrix <| modelMatrixMarker marker
+
         mvpMatrix =
-            Mat.mul pMatrix (Mat.mul vMatrix <| modelMatrixMarker marker)
+            Mat.mul pMatrix mvMatrix
     in
         GL.entity
             vertexShader
             fragmentShader
             marker.mesh
-            { mvpMatrix = mvpMatrix }
+            { mvpMatrix = mvpMatrix
+            , mvMatrix = mvMatrix
+            , lightDirection = lightFromAbove
+            }
 
 
 modelMatrixMarker : Marker -> Mat4
@@ -118,6 +124,11 @@ adjustHeight amount vec =
 yawSpeed : Float
 yawSpeed =
     90
+
+
+lightFromAbove : Vec3
+lightFromAbove =
+    Vec.normalize <| vec3 1 1 0
 
 
 {-| The pyramid has no shared vertice instances as it must utilize flat shading.
@@ -171,6 +182,10 @@ makeMesh =
         GL.indexedTriangles vertices indices
 
 
+
+{- Helper functions for generation of model. -}
+
+
 top : Vec3
 top =
     vec3 0 0.5 0
@@ -221,25 +236,54 @@ bottomNormal =
     vec3 0 -1 0
 
 
-vertexShader : Shader Vertex { uniforms | mvpMatrix : Mat4 } {}
+{-| The vertex shader for the Marker. Just transforming and preparing stuff
+for the fragment shader. All lightning is made in view space.
+-}
+vertexShader :
+    Shader Vertex
+        { uniforms
+            | mvpMatrix : Mat4
+            , mvMatrix : Mat4
+        }
+        { vPosition : Vec3
+        , vNormal : Vec3
+        }
 vertexShader =
     [glsl|
         attribute vec3 position;
         attribute vec3 normal;
 
         uniform mat4 mvpMatrix;
+        uniform mat4 mvMatrix;
+
+        varying vec3 vPosition;
+        varying vec3 vNormal;
 
         void main()
         {
+            vPosition = (mvMatrix * vec4(position, 1.0)).xyz;
+            vNormal = (mvMatrix * vec4(normal, 0.0)).xyz;
             gl_Position = mvpMatrix * vec4(position, 1.0);
         }
     |]
 
 
-fragmentShader : Shader {} uniforms {}
+fragmentShader :
+    Shader {}
+        { uniforms
+            | lightDirection : Vec3
+        }
+        { vPosition : Vec3
+        , vNormal : Vec3
+        }
 fragmentShader =
     [glsl|
         precision mediump float;
+
+        uniform vec3 lightDirection;
+
+        varying vec3 vPosition;
+        varying vec3 vNormal;
 
         void main()
         {
