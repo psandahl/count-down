@@ -16,6 +16,8 @@ import Game.Board as Board
 import Game.Camera exposing (Camera)
 import Game.Camera as Camera
 import Game.Level exposing (Level)
+import Game.Marker exposing (Marker)
+import Game.Marker as Marker
 import Game.MeshStore exposing (MeshStore)
 import Game.UserInput exposing (UserInput)
 import Game.UserInput as UserInput
@@ -36,6 +38,7 @@ type alias Game =
     { pMatrix : Mat4
     , camera : Camera
     , board : Board
+    , marker : Marker
     , userInput : UserInput
     }
 
@@ -45,6 +48,7 @@ new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
     , camera = Camera.init
     , board = Board.init (BoardWidth 10) (InnerWidth 5) meshStore.boardMesh
+    , marker = Marker.init meshStore.markerMesh
     , userInput = UserInput.init
     }
 
@@ -112,6 +116,7 @@ render game =
         , Attr.width width
         ]
         [ Board.render game.pMatrix game.camera.vMatrix game.board
+        , Marker.render game.pMatrix game.camera.vMatrix game.marker
         ]
 
 
