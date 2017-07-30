@@ -96,6 +96,7 @@ render pMatrix vMatrix marker =
             marker.mesh
             { mvpMatrix = mvpMatrix
             , mvMatrix = mvMatrix
+            , vMatrix = vMatrix
             , lightDirection = lightFromAbove
             }
 
@@ -128,7 +129,7 @@ yawSpeed =
 
 lightFromAbove : Vec3
 lightFromAbove =
-    Vec.normalize <| vec3 1 1 0
+    Vec.normalize <| vec3 2 1 0
 
 
 {-| The pyramid has no shared vertice instances as it must utilize flat shading.
@@ -274,7 +275,8 @@ Other lightning stuff is hard coded in the shader.
 fragmentShader :
     Shader {}
         { uniforms
-            | lightDirection : Vec3
+            | vMatrix : Mat4
+            , lightDirection : Vec3
         }
         { vPosition : Vec3
         , vNormal : Vec3
@@ -283,13 +285,41 @@ fragmentShader =
     [glsl|
         precision mediump float;
 
+        uniform mat4 vMatrix;
         uniform vec3 lightDirection;
 
         varying vec3 vPosition;
         varying vec3 vNormal;
 
+        vec3 markerColor = vec3(0.8, 0.8, 0.8);
+        vec3 lightColor = vec3(1.0, 1.0, 1.0);
+        float ambientStrength = 0.2;
+
+        vec3 transformedLightDirection();
+        vec3 ambientColor();
+        vec3 diffuseColor();
+
         void main()
         {
-            gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
+            vec3 color = markerColor * (ambientColor() + diffuseColor());
+            gl_FragColor = vec4(color, 1.0);
+        }
+
+        vec3 transformedLightDirection()
+        {
+            return (vMatrix * vec4(lightDirection, 0.0)).xyz;
+        }
+
+        vec3 ambientColor()
+        {
+            return lightColor * ambientStrength;
+        }
+
+        vec3 diffuseColor()
+        {
+            vec3 normal = normalize(vNormal);
+            float diffuse = min(dot(normal, transformedLightDirection()), 0.0);
+
+            return lightColor * diffuse;
         }
     |]
