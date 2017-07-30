@@ -18,6 +18,8 @@ import Math.Vector3 as Vec
 import Time exposing (Time)
 import WebGL exposing (Mesh, Entity, Shader)
 import WebGL as GL
+import WebGL.Settings as Settings
+import WebGL.Settings.Blend as Blend
 
 
 {-| Vertex type for the marker. Position and normal.
@@ -116,7 +118,13 @@ renderReflection pMatrix vMatrix marker =
         mvpMatrix =
             Mat.mul pMatrix mvMatrix
     in
-        GL.entity
+        GL.entityWith
+            [ -- Blend with the colors on the Board ...
+              Blend.add Blend.one Blend.one
+
+            -- ... but not with its own backfaces.
+            , Settings.cullFace Settings.back
+            ]
             vertexShader
             fragmentShader
             marker.mesh

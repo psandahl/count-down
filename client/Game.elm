@@ -122,17 +122,23 @@ keyReleased key game =
 render : Game -> Html msg
 render game =
     GL.toHtmlWith
-        [ GL.alpha True
-        , GL.antialias
+        [ GL.antialias
         , GL.depth 1
         , GL.clearColor 1 0 0 1
         ]
         [ Attr.height height
         , Attr.width width
         ]
-        [ Board.render game.pMatrix game.camera.vMatrix game.board
-        , Marker.render game.pMatrix game.camera.vMatrix game.marker
+        [ -- The rendering order is really important. First the board must
+          -- be rendered (without filling the depth buffer).
+          Board.render game.pMatrix game.camera.vMatrix game.board
+
+        -- Render the reflection, which is blending with the board.
         , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
+
+        -- Last render the Marker. Its color must never blend when rendering
+        -- the reflection.
+        , Marker.render game.pMatrix game.camera.vMatrix game.marker
         ]
 
 
