@@ -129,7 +129,7 @@ yawSpeed =
 
 lightFromAbove : Vec3
 lightFromAbove =
-    Vec.normalize <| vec3 2 1 0
+    Vec.normalize <| vec3 3 1 -2
 
 
 {-| The pyramid has no shared vertice instances as it must utilize flat shading.
@@ -291,17 +291,20 @@ fragmentShader =
         varying vec3 vPosition;
         varying vec3 vNormal;
 
-        vec3 markerColor = vec3(0.8, 0.8, 0.8);
+        vec3 markerColor = vec3(152.0 / 255.0, 1.0, 152.0 / 255.0);
         vec3 lightColor = vec3(1.0, 1.0, 1.0);
-        float ambientStrength = 0.2;
+        float ambientStrength = 0.8;
+        float specularShine = 64.0;
+        float specularStrength = 2.0;
 
         vec3 transformedLightDirection();
         vec3 ambientColor();
         vec3 diffuseColor();
+        vec3 specularColor();
 
         void main()
         {
-            vec3 color = markerColor * (ambientColor() + diffuseColor());
+            vec3 color = markerColor * (ambientColor() + diffuseColor() + specularColor());
             gl_FragColor = vec4(color, 1.0);
         }
 
@@ -321,5 +324,15 @@ fragmentShader =
             float diffuse = min(dot(normal, transformedLightDirection()), 0.0);
 
             return lightColor * diffuse;
+        }
+
+        vec3 specularColor()
+        {
+            vec3 normal = normalize(vNormal);
+            vec3 reflectDir = reflect(transformedLightDirection(), normal);
+            vec3 viewDir = normalize(vec3(0.0) - vPosition); // Eye at 0, 0, 0.
+            float specular = pow(min(dot(viewDir, reflectDir), 0.0), specularShine);
+
+            return lightColor * specular * specularStrength;
         }
     |]
