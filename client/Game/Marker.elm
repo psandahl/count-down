@@ -86,21 +86,9 @@ position marker =
 -}
 render : Mat4 -> Mat4 -> Marker -> Entity
 render pMatrix vMatrix marker =
-    rend pMatrix vMatrix modelMatrixMarker lightFromBelow 1.0 marker
-
-
-{-| Render the Marker reflection.
--}
-renderReflection : Mat4 -> Mat4 -> Marker -> Entity
-renderReflection pMatrix vMatrix marker =
-    rend pMatrix vMatrix modelMatrixReflection lightFromBelow 0.3 marker
-
-
-rend : Mat4 -> Mat4 -> (Marker -> Mat4) -> Vec3 -> Float -> Marker -> Entity
-rend pMatrix vMatrix makeModel lightDir damper marker =
     let
         mvMatrix =
-            Mat.mul vMatrix <| makeModel marker
+            Mat.mul vMatrix <| modelMatrixMarker marker
 
         mvpMatrix =
             Mat.mul pMatrix mvMatrix
@@ -112,8 +100,31 @@ rend pMatrix vMatrix makeModel lightDir damper marker =
             { mvpMatrix = mvpMatrix
             , mvMatrix = mvMatrix
             , vMatrix = vMatrix
-            , lightDirection = lightDir
-            , colorDamper = damper
+            , lightDirection = lightFromAbove
+            , colorDamper = 1.0
+            }
+
+
+{-| Render the Marker reflection.
+-}
+renderReflection : Mat4 -> Mat4 -> Marker -> Entity
+renderReflection pMatrix vMatrix marker =
+    let
+        mvMatrix =
+            Mat.mul vMatrix <| modelMatrixReflection marker
+
+        mvpMatrix =
+            Mat.mul pMatrix mvMatrix
+    in
+        GL.entity
+            vertexShader
+            fragmentShader
+            marker.mesh
+            { mvpMatrix = mvpMatrix
+            , mvMatrix = mvMatrix
+            , vMatrix = vMatrix
+            , lightDirection = lightFromBelow
+            , colorDamper = 0.3
             }
 
 
