@@ -132,6 +132,7 @@ render game =
         ]
         [ Board.render game.pMatrix game.camera.vMatrix game.board
         , Marker.render game.pMatrix game.camera.vMatrix game.marker
+        , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
         ]
 
 

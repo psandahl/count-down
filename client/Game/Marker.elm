@@ -7,6 +7,7 @@ module Game.Marker
         , moveTo
         , position
         , render
+        , renderReflection
         , makeMesh
         )
 
@@ -101,6 +102,26 @@ render pMatrix vMatrix marker =
             }
 
 
+renderReflection : Mat4 -> Mat4 -> Marker -> Entity
+renderReflection pMatrix vMatrix marker =
+    let
+        mvMatrix =
+            Mat.mul vMatrix <| modelMatrixReflection marker
+
+        mvpMatrix =
+            Mat.mul pMatrix mvMatrix
+    in
+        GL.entity
+            vertexShader
+            fragmentShader
+            marker.mesh
+            { mvpMatrix = mvpMatrix
+            , mvMatrix = mvMatrix
+            , vMatrix = vMatrix
+            , lightDirection = lightFromBelow
+            }
+
+
 modelMatrixMarker : Marker -> Mat4
 modelMatrixMarker marker =
     let
@@ -111,6 +132,18 @@ modelMatrixMarker marker =
             Mat.makeRotate (degrees marker.yawAngle) (vec3 0 1 0)
     in
         Mat.mul translateMatrix <| Mat.mul yawMatrix marker.pitchMatrix
+
+
+modelMatrixReflection : Marker -> Mat4
+modelMatrixReflection marker =
+    let
+        translateMatrix =
+            Mat.makeTranslate <| adjustHeight -0.5 marker.position
+
+        yawMatrix =
+            Mat.makeRotate (degrees marker.yawAngle) (vec3 0 1 0)
+    in
+        Mat.mul translateMatrix yawMatrix
 
 
 adjustHeight : Float -> Vec3 -> Vec3
@@ -130,6 +163,11 @@ yawSpeed =
 lightFromAbove : Vec3
 lightFromAbove =
     Vec.normalize <| vec3 3 1 -2
+
+
+lightFromBelow : Vec3
+lightFromBelow =
+    Vec.normalize <| vec3 3 -1 -2
 
 
 {-| The pyramid has no shared vertice instances as it must utilize flat shading.

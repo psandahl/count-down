@@ -17,6 +17,7 @@ import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import WebGL as GL
 import WebGL exposing (Entity, Mesh, Shader)
+import WebGL.Settings.DepthTest as Depth
 
 
 {-| The vertex type for a Board. Only position is needed.
@@ -64,7 +65,9 @@ render pMatrix vMatrix board =
         mvpMatrix =
             Mat.mul pMatrix <| Mat.mul vMatrix board.modelMatrix
     in
-        GL.entity vertexShader
+        GL.entityWith
+            [ Depth.always { write = False, near = 0, far = 1 } ]
+            vertexShader
             fragmentShader
             board.mesh
             { mvpMatrix = mvpMatrix
