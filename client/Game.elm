@@ -11,7 +11,7 @@ module Game
         )
 
 import Array exposing (Array)
-import Game.Board exposing (Board, BoardWidth(..), InnerWidth(..))
+import Game.Board exposing (Board, BoardWidth(..), GameWidth(..))
 import Game.Board as Board
 import Game.Camera exposing (Camera)
 import Game.Camera as Camera
@@ -47,7 +47,7 @@ new : Level -> MeshStore -> Array Texture -> Game
 new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
     , camera = Camera.init
-    , board = Board.init (BoardWidth 10) (InnerWidth 5) meshStore.boardMesh
+    , board = Board.init (BoardWidth 100) (GameWidth 10) meshStore.boardMesh
     , marker = Marker.init ( 0, 0 ) meshStore.markerMesh
     , userInput = UserInput.init
     }

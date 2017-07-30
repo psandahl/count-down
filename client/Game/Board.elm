@@ -3,7 +3,7 @@ module Game.Board
         ( Vertex
         , Board
         , BoardWidth(..)
-        , InnerWidth(..)
+        , GameWidth(..)
         , init
         , render
         , makeMesh
@@ -32,7 +32,7 @@ type alias Vertex =
 type alias Board =
     { mesh : Mesh Vertex
     , modelMatrix : Mat4
-    , innerRadius : Float
+    , gameRadius : Float
     }
 
 
@@ -43,19 +43,19 @@ type BoardWidth
     = BoardWidth Float
 
 
-{-| Inner width of the playing field on the board.
+{-| Width of the playing field on the board.
 -}
-type InnerWidth
-    = InnerWidth Float
+type GameWidth
+    = GameWidth Float
 
 
 {-| Create a new Board. Use an already made mesh from the store.
 -}
-init : BoardWidth -> InnerWidth -> Mesh Vertex -> Board
-init (BoardWidth outer) (InnerWidth inner) mesh =
+init : BoardWidth -> GameWidth -> Mesh Vertex -> Board
+init (BoardWidth outer) (GameWidth inner) mesh =
     { mesh = mesh
     , modelMatrix = Mat.makeScale3 outer outer outer
-    , innerRadius = inner / 2 -- Just use the radius.
+    , gameRadius = inner / 2 -- Just use the radius.
     }
 
 
@@ -72,7 +72,7 @@ render pMatrix vMatrix board =
             board.mesh
             { mvpMatrix = mvpMatrix
             , modelMatrix = board.modelMatrix
-            , innerRadius = board.innerRadius
+            , gameRadius = board.gameRadius
             }
 
 
@@ -119,7 +119,7 @@ vertexShader =
 fragmentShader :
     Shader {}
         { uniforms
-            | innerRadius : Float
+            | gameRadius : Float
         }
         { vPosition : Vec3
         }
@@ -127,28 +127,30 @@ fragmentShader =
     [glsl|
         precision mediump float;
 
-        uniform float innerRadius;
+        uniform float gameRadius;
 
         varying vec3 vPosition;
 
-        const float thickness = 0.5;
+        vec3 boardColor = vec3(0.0);
+        vec3 borderColor = vec3(0.0, 0.0, 0.3);
+        const float thickness = 0.1;
 
         void main()
         {
             float x = abs(vPosition.x);
             float z = abs(vPosition.z);
 
-            if (x >= innerRadius && x < innerRadius + thickness && z < innerRadius + thickness)
+            if (x >= gameRadius && x < gameRadius + thickness && z < gameRadius + thickness)
             {
-                gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+                gl_FragColor = vec4(borderColor, 1.0);
             }
-            else if (z >= innerRadius && z < innerRadius + thickness && x < innerRadius)
+            else if (z >= gameRadius && z < gameRadius + thickness && x < gameRadius)
             {
-                gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+                gl_FragColor = vec4(borderColor, 1.0);
             }
             else
             {
-                gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                gl_FragColor = vec4(boardColor, 1.0);
             }
         }
     |]
