@@ -82,31 +82,25 @@ position marker =
     ( Vec.getX marker.position, Vec.getZ marker.position )
 
 
+{-| Render the Marker.
+-}
 render : Mat4 -> Mat4 -> Marker -> Entity
 render pMatrix vMatrix marker =
-    let
-        mvMatrix =
-            Mat.mul vMatrix <| modelMatrixMarker marker
-
-        mvpMatrix =
-            Mat.mul pMatrix mvMatrix
-    in
-        GL.entity
-            vertexShader
-            fragmentShader
-            marker.mesh
-            { mvpMatrix = mvpMatrix
-            , mvMatrix = mvMatrix
-            , vMatrix = vMatrix
-            , lightDirection = lightFromAbove
-            }
+    rend pMatrix vMatrix modelMatrixMarker lightFromBelow 1.0 marker
 
 
+{-| Render the Marker reflection.
+-}
 renderReflection : Mat4 -> Mat4 -> Marker -> Entity
 renderReflection pMatrix vMatrix marker =
+    rend pMatrix vMatrix modelMatrixReflection lightFromBelow 0.3 marker
+
+
+rend : Mat4 -> Mat4 -> (Marker -> Mat4) -> Vec3 -> Float -> Marker -> Entity
+rend pMatrix vMatrix makeModel lightDir damper marker =
     let
         mvMatrix =
-            Mat.mul vMatrix <| modelMatrixReflection marker
+            Mat.mul vMatrix <| makeModel marker
 
         mvpMatrix =
             Mat.mul pMatrix mvMatrix
@@ -118,7 +112,8 @@ renderReflection pMatrix vMatrix marker =
             { mvpMatrix = mvpMatrix
             , mvMatrix = mvMatrix
             , vMatrix = vMatrix
-            , lightDirection = lightFromBelow
+            , lightDirection = lightDir
+            , colorDamper = damper
             }
 
 
@@ -315,6 +310,7 @@ fragmentShader :
         { uniforms
             | vMatrix : Mat4
             , lightDirection : Vec3
+            , colorDamper : Float
         }
         { vPosition : Vec3
         , vNormal : Vec3
@@ -325,6 +321,7 @@ fragmentShader =
 
         uniform mat4 vMatrix;
         uniform vec3 lightDirection;
+        uniform float colorDamper;
 
         varying vec3 vPosition;
         varying vec3 vNormal;
@@ -343,7 +340,7 @@ fragmentShader =
         void main()
         {
             vec3 color = markerColor * (ambientColor() + diffuseColor() + specularColor());
-            gl_FragColor = vec4(color, 1.0);
+            gl_FragColor = vec4(colorDamper * color, 1.0);
         }
 
         vec3 transformedLightDirection()
