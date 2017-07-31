@@ -51,7 +51,7 @@ new : Level -> MeshStore -> Array Texture -> Game
 new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
     , camera = Camera.init
-    , board = Board.init (BoardWidth 100) (GameWidth 10) meshStore.boardMesh
+    , board = Board.init (BoardWidth 11) (GameWidth 10) meshStore.boardMesh
     , marker = Marker.init ( 0, 0 ) meshStore.markerMesh
     , userInput = UserInput.init
     }
@@ -184,7 +184,7 @@ render game =
     GL.toHtmlWith
         [ GL.antialias
         , GL.depth 1
-        , GL.clearColor 1 0 0 1
+        , GL.clearColor 0 0 0 0
         ]
         [ Attr.height height
         , Attr.width width
@@ -209,9 +209,9 @@ aspectRatio =
 
 width : Int
 width =
-    800
+    1024
 
 
 height : Int
 height =
-    600
+    768

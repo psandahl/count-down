@@ -145,7 +145,7 @@ fragmentShader =
 
         vec3 boardColor = vec3(0.0);
         vec3 borderColor = vec3(0.0, 0.0, 0.3);
-        const float thickness = 0.1;
+        const float thickness = 0.25;
 
         void main()
         {
