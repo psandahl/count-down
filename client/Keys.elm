@@ -7,6 +7,9 @@ type Key
     = Plus
     | Minus
     | Left
+    | Up
+    | Right
+    | Down
     | SomethingElse
 
 
@@ -15,6 +18,15 @@ fromKeyCode code =
     case code of
         37 ->
             Left
+
+        38 ->
+            Up
+
+        39 ->
+            Right
+
+        40 ->
+            Down
 
         107 ->
             Plus

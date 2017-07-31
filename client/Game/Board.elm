@@ -5,6 +5,7 @@ module Game.Board
         , BoardWidth(..)
         , GameWidth(..)
         , init
+        , clampPosition
         , render
         , makeMesh
         )
@@ -57,6 +58,17 @@ init (BoardWidth outer) (GameWidth inner) mesh =
     , modelMatrix = Mat.makeScale3 outer outer outer
     , gameRadius = inner / 2 -- Just use the radius.
     }
+
+
+{-| Clamp the given position within the borders of the game area of the board.
+-}
+clampPosition : Board -> ( Float, Float ) -> ( Float, Float )
+clampPosition board ( x, z ) =
+    let
+        r =
+            board.gameRadius
+    in
+        ( clamp -r r x, clamp -r r z )
 
 
 render : Mat4 -> Mat4 -> Board -> Entity

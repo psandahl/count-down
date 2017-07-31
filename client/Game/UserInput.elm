@@ -1,4 +1,14 @@
-module Game.UserInput exposing (UserInput, init, setZoomIn, setZoomOut, setGoLeft)
+module Game.UserInput
+    exposing
+        ( UserInput
+        , init
+        , setZoomIn
+        , setZoomOut
+        , setGoLeft
+        , setGoUp
+        , setGoRight
+        , setGoDown
+        )
 
 import Keys exposing (Key)
 
@@ -7,6 +17,9 @@ type alias UserInput =
     { zoomIn : Bool
     , zoomOut : Bool
     , goLeft : Bool
+    , goUp : Bool
+    , goRight : Bool
+    , goDown : Bool
     }
 
 
@@ -15,6 +28,9 @@ init =
     { zoomIn = False
     , zoomOut = False
     , goLeft = False
+    , goUp = False
+    , goRight = False
+    , goDown = False
     }
 
 
@@ -31,3 +47,18 @@ setZoomOut value userInput =
 setGoLeft : Bool -> UserInput -> UserInput
 setGoLeft value userInput =
     { userInput | goLeft = value }
+
+
+setGoUp : Bool -> UserInput -> UserInput
+setGoUp value userInput =
+    { userInput | goUp = value }
+
+
+setGoRight : Bool -> UserInput -> UserInput
+setGoRight value userInput =
+    { userInput | goRight = value }
+
+
+setGoDown : Bool -> UserInput -> UserInput
+setGoDown value userInput =
+    { userInput | goDown = value }

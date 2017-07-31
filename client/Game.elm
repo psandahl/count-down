@@ -43,6 +43,10 @@ type alias Game =
     }
 
 
+type alias Speed =
+    Float
+
+
 new : Level -> MeshStore -> Array Texture -> Game
 new level meshStore textures =
     { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
@@ -53,33 +57,33 @@ new level meshStore textures =
     }
 
 
+{-| Take care of the timeTick event. Evolve game logic.
+-}
 timeTick : Game -> Game
 timeTick game =
     game
 
 
-{-| Take care of the animate event. Animate subcomponents.
+{-| Take care of the animate event. Animate subcomponents and evolve game
+logic.
 -}
 animate : Time -> Game -> Game
 animate time game =
-    { game
-        | camera = Camera.animate time game.userInput game.camera
-        , marker = Marker.yaw time <| moveMarker time game
-    }
+    let
+        newPosition =
+            newMarkerPosition time markerMoveSpeed game
+
+        movedMarker =
+            Marker.moveTo newPosition game.marker
+    in
+        { game
+            | camera = Camera.animate time game.userInput game.camera
+            , marker = Marker.yaw time movedMarker
+        }
 
 
-moveMarker : Time -> Game -> Marker
-moveMarker time game =
-    if game.userInput.goLeft then
-        let
-            ( x, z ) =
-                Marker.position game.marker
-        in
-            Marker.moveTo ( x - time, z ) game.marker
-    else
-        game.marker
-
-
+{-| Take care of the mouseMoved event. Repositioning the Camera.
+-}
 mouseMoved : Position -> Position -> Game -> Game
 mouseMoved from to game =
     { game
@@ -87,33 +91,89 @@ mouseMoved from to game =
     }
 
 
+{-| Take care of the key pressed event.
+-}
 keyPressed : Key -> Game -> Game
-keyPressed key game =
-    case key of
-        Left ->
-            { game | userInput = UserInput.setGoLeft True game.userInput }
-
-        Plus ->
-            { game | userInput = UserInput.setZoomIn True game.userInput }
-
-        Minus ->
-            { game | userInput = UserInput.setZoomOut True game.userInput }
-
-        SomethingElse ->
-            game
+keyPressed =
+    keyAction True
 
 
+{-| Take care of the key released event.
+-}
 keyReleased : Key -> Game -> Game
-keyReleased key game =
+keyReleased =
+    keyAction False
+
+
+markerMoveSpeed : Speed
+markerMoveSpeed =
+    3
+
+
+newMarkerPosition : Time -> Speed -> Game -> ( Float, Float )
+newMarkerPosition time speed game =
+    Board.clampPosition game.board <|
+        moveMarker game.userInput.goLeft time speed moveLeft <|
+            moveMarker game.userInput.goUp time speed moveUp <|
+                moveMarker game.userInput.goRight time speed moveRight <|
+                    moveMarker game.userInput.goDown time speed moveDown <|
+                        Marker.position game.marker
+
+
+moveMarker :
+    Bool
+    -> Time
+    -> Speed
+    -> (Float -> ( Float, Float ) -> ( Float, Float ))
+    -> ( Float, Float )
+    -> ( Float, Float )
+moveMarker active time speed move pos =
+    if active then
+        move (time * speed) pos
+    else
+        pos
+
+
+moveLeft : Float -> ( Float, Float ) -> ( Float, Float )
+moveLeft amount ( x, z ) =
+    ( x - amount, z )
+
+
+moveUp : Float -> ( Float, Float ) -> ( Float, Float )
+moveUp amount ( x, z ) =
+    ( x, z - amount )
+
+
+moveRight : Float -> ( Float, Float ) -> ( Float, Float )
+moveRight amount ( x, z ) =
+    ( x + amount, z )
+
+
+moveDown : Float -> ( Float, Float ) -> ( Float, Float )
+moveDown amount ( x, z ) =
+    ( x, z + amount )
+
+
+keyAction : Bool -> Key -> Game -> Game
+keyAction value key game =
     case key of
         Left ->
-            { game | userInput = UserInput.setGoLeft False game.userInput }
+            { game | userInput = UserInput.setGoLeft value game.userInput }
+
+        Up ->
+            { game | userInput = UserInput.setGoUp value game.userInput }
+
+        Right ->
+            { game | userInput = UserInput.setGoRight value game.userInput }
+
+        Down ->
+            { game | userInput = UserInput.setGoDown value game.userInput }
 
         Plus ->
-            { game | userInput = UserInput.setZoomIn False game.userInput }
+            { game | userInput = UserInput.setZoomIn value game.userInput }
 
         Minus ->
-            { game | userInput = UserInput.setZoomOut False game.userInput }
+            { game | userInput = UserInput.setZoomOut value game.userInput }
 
         SomethingElse ->
             game
