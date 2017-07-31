@@ -176,12 +176,12 @@ yawSpeed =
 
 lightFromAbove : Vec3
 lightFromAbove =
-    Vec.normalize <| vec3 3 1 -2
+    Vec.normalize <| vec3 0.5 1 -2
 
 
 lightFromBelow : Vec3
 lightFromBelow =
-    Vec.normalize <| vec3 3 -1 -2
+    Vec.normalize <| vec3 0.5 -1 -2
 
 
 {-| The pyramid has no shared vertice instances as it must utilize flat shading.
@@ -347,9 +347,9 @@ fragmentShader =
 
         vec3 markerColor = vec3(152.0 / 255.0, 1.0, 152.0 / 255.0);
         vec3 lightColor = vec3(1.0, 1.0, 1.0);
-        float ambientStrength = 0.8;
+        float ambientStrength = 0.9;
         float specularShine = 64.0;
-        float specularStrength = 2.0;
+        float specularStrength = 1.2;
 
         vec3 transformedLightDirection();
         vec3 ambientColor();
