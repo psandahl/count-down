@@ -194,5 +194,16 @@ loadTextures =
     Task.attempt TexturesLoaded <|
         Task.sequence <|
             List.map Texture.load
-                [ "texture/ten.png"
+                [ "texture/dead.png"
+                , "texture/one.png"
+                , "texture/two.png"
+                , "texture/three.png"
+                , "texture/four.png"
+                , "texture/five.png"
+                , "texture/six.png"
+                , "texture/seven.png"
+                , "texture/eight.png"
+                , "texture/nine.png"
+                , "texture/ten.png"
+                , "texture/success.png"
                 ]
