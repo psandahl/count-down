@@ -84,6 +84,7 @@ animate time game =
         { game
             | camera = Camera.animate time game.userInput game.camera
             , marker = Marker.yaw time movedMarker
+            , counter = Counter.animate time game.counter
         }
 
 

@@ -1,10 +1,19 @@
-module Game.Counter exposing (Vertex, Counter, init, render, makeMesh)
+module Game.Counter
+    exposing
+        ( Vertex
+        , Counter
+        , init
+        , animate
+        , render
+        , makeMesh
+        )
 
 import Array exposing (Array, get)
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Math.Vector2 exposing (Vec2, vec2)
 import Math.Vector3 exposing (Vec3, vec3)
+import Time exposing (Time)
 import WebGL exposing (Entity, Mesh, Texture, Shader)
 import WebGL as GL
 
@@ -24,6 +33,9 @@ type alias Counter =
     , modelMatrix : Mat4
     , textures : Array Texture
     , currentCount : Int
+    , bgColor : Vec3
+    , fgColor : Vec3
+    , colorMix : Float
     }
 
 
@@ -35,7 +47,22 @@ init ( x, z ) textures mesh =
     , modelMatrix = Mat.makeTranslate3 x 0 z
     , textures = textures
     , currentCount = 0
+    , bgColor = vec3 0 0 0
+    , fgColor = vec3 0 0.8 0
+    , colorMix = 1
     }
+
+
+animate : Time -> Counter -> Counter
+animate time counter =
+    let
+        newCount =
+            counter.colorMix - time
+    in
+        if newCount < 0 then
+            { counter | colorMix = 1 }
+        else
+            { counter | colorMix = newCount }
 
 
 render : Mat4 -> Mat4 -> Counter -> Maybe Entity
@@ -53,6 +80,9 @@ render pMatrix vMatrix counter =
                         counter.mesh
                         { mvpMatrix = mvpMatrix
                         , texture = texture
+                        , bgColor = counter.bgColor
+                        , fgColor = counter.fgColor
+                        , colorMix = counter.colorMix
                         }
 
         Nothing ->
@@ -94,17 +124,36 @@ vertexShader =
     |]
 
 
-fragmentShader : Shader {} { uniforms | texture : Texture } { vTexCoord : Vec2 }
+fragmentShader :
+    Shader {}
+        { uniforms
+            | texture : Texture
+            , bgColor : Vec3
+            , fgColor : Vec3
+            , colorMix : Float
+        }
+        { vTexCoord : Vec2 }
 fragmentShader =
     [glsl|
         precision mediump float;
 
         uniform sampler2D texture;
+        uniform vec3 bgColor;
+        uniform vec3 fgColor;
+        uniform float colorMix;
 
         varying vec2 vTexCoord;
 
         void main()
         {
-            gl_FragColor = texture2D(texture, vTexCoord);
+            float alpha = texture2D(texture, vTexCoord).a;
+            if (alpha > 0.5)
+            {
+                gl_FragColor = vec4(mix(bgColor, fgColor, colorMix), 1.0);
+            }
+            else
+            {
+                discard;
+            }
         }
     |]
