@@ -15,6 +15,8 @@ import Game.Board exposing (Board, BoardWidth(..), GameWidth(..))
 import Game.Board as Board
 import Game.Camera exposing (Camera)
 import Game.Camera as Camera
+import Game.Counter exposing (Counter)
+import Game.Counter as Counter
 import Game.Level exposing (Level)
 import Game.Marker exposing (Marker)
 import Game.Marker as Marker
@@ -30,6 +32,7 @@ import Math.Matrix4 as Mat
 import Math.Vector3 as Vec
 import Mouse exposing (Position)
 import Time exposing (Time)
+import WebGL exposing (Entity)
 import WebGL as GL
 import WebGL.Texture exposing (Texture)
 
@@ -40,6 +43,7 @@ type alias Game =
     , board : Board
     , marker : Marker
     , userInput : UserInput
+    , counter : Counter -- Dummy
     }
 
 
@@ -54,6 +58,7 @@ new level meshStore textures =
     , board = Board.init (BoardWidth 11) (GameWidth 10) meshStore.boardMesh
     , marker = Marker.init ( 0, 0 ) meshStore.markerMesh
     , userInput = UserInput.init
+    , counter = Counter.init ( 0, 0 ) textures meshStore.counterMesh
     }
 
 
@@ -189,17 +194,39 @@ render game =
         [ Attr.height height
         , Attr.width width
         ]
-        [ -- The rendering order is really important. First the board must
-          -- be rendered (without filling the depth buffer).
-          Board.render game.pMatrix game.camera.vMatrix game.board
+    <|
+        entities game
 
-        -- Render the reflection, which is blending with the board.
-        , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
 
-        -- Last render the Marker. Its color must never blend when rendering
-        -- the reflection.
-        , Marker.render game.pMatrix game.camera.vMatrix game.marker
-        ]
+entities : Game -> List Entity
+entities game =
+    case Counter.render game.pMatrix game.camera.vMatrix game.counter of
+        Just c ->
+            [ -- The rendering order is really important. First the board must
+              -- be rendered (without filling the depth buffer).
+              Board.render game.pMatrix game.camera.vMatrix game.board
+            , c
+
+            -- Render the reflection, which is blending with the board.
+            , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
+
+            -- Last render the Marker. Its color must never blend when rendering
+            -- the reflection.
+            , Marker.render game.pMatrix game.camera.vMatrix game.marker
+            ]
+
+        Nothing ->
+            [ -- The rendering order is really important. First the board must
+              -- be rendered (without filling the depth buffer).
+              Board.render game.pMatrix game.camera.vMatrix game.board
+
+            -- Render the reflection, which is blending with the board.
+            , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
+
+            -- Last render the Marker. Its color must never blend when rendering
+            -- the reflection.
+            , Marker.render game.pMatrix game.camera.vMatrix game.marker
+            ]
 
 
 aspectRatio : Float
