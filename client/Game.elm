@@ -85,9 +85,8 @@ animate time game =
     in
         { game
             | camera = Camera.animate time game.userInput game.camera
+            , counters = Counters.animate time game.counters
             , marker = Marker.yaw time movedMarker
-
-            --, counter = Counter.animate time game.counter
         }
 
 
@@ -204,17 +203,32 @@ render game =
 
 entities : Game -> List Entity
 entities game =
-    [ -- The rendering order is really important. First the board must
-      -- be rendered (without filling the depth buffer).
-      Board.render game.pMatrix game.camera.vMatrix game.board
+    let
+        pMatrix =
+            game.pMatrix
 
-    -- Render the reflection, which is blending with the board.
-    , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
+        vMatrix =
+            game.camera.vMatrix
 
-    -- Last render the Marker. Its color must never blend when rendering
-    -- the reflection.
-    , Marker.render game.pMatrix game.camera.vMatrix game.marker
-    ]
+        board =
+            Board.render pMatrix vMatrix game.board
+
+        counters =
+            Counters.render pMatrix vMatrix game.counters
+
+        marker =
+            [ -- Render the reflection, which is blending with the board and
+              -- the counters.
+              Marker.renderReflection pMatrix vMatrix game.marker
+
+            -- Last render the Marker. Its color must never blend when rendering
+            -- the reflection.
+            , Marker.render pMatrix vMatrix game.marker
+            ]
+    in
+        -- The order is important. First the board, then the counters and
+        -- last the marker in the internal order described above.
+        board :: counters ++ marker
 
 
 aspectRatio : Float
