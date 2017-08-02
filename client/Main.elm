@@ -60,8 +60,8 @@ update msg model =
                     , Cmd.none
                     )
 
-        TimeTick ->
-            ( { model | game = Maybe.map Game.timeTick model.game }
+        Second ->
+            ( model
             , Cmd.none
             )
 
@@ -157,7 +157,7 @@ subscriptions model =
         Playing ->
             let
                 animationSubs =
-                    [ Time.every Time.second (always TimeTick)
+                    [ Time.every Time.second (always Second)
                     , AnimationFrame.diffs <| Animate << Time.inSeconds
                     ]
 

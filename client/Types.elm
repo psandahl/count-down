@@ -64,8 +64,8 @@ type
     Msg
     -- The requested textures are loaded.
     = TexturesLoaded (Result Error (List Texture))
-      -- TimeTick every second while in Playing state.
-    | TimeTick
+      -- Fire every second while in Playing state.
+    | Second
       -- Time difference in fractions of s since the last animation event.
     | Animate Time
       -- Request to start a new game.
