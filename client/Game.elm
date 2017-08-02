@@ -15,8 +15,8 @@ import Game.Board exposing (Board)
 import Game.Board as Board
 import Game.Camera exposing (Camera)
 import Game.Camera as Camera
-import Game.Counter exposing (Counter)
-import Game.Counter as Counter
+import Game.Counters exposing (Counters)
+import Game.Counters as Counters
 import Game.Level exposing (Level, Details)
 import Game.Level as Level
 import Game.Marker exposing (Marker)
@@ -43,9 +43,9 @@ type alias Game =
     { pMatrix : Mat4
     , camera : Camera
     , board : Board
+    , counters : Counters
     , marker : Marker
     , userInput : UserInput
-    , counter : Counter -- Dummy
     }
 
 
@@ -58,9 +58,9 @@ new level meshStore textures =
         { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
         , camera = Camera.init
         , board = Board.init details.boardWidth details.gameWidth meshStore.boardMesh
+        , counters = Counters.init level meshStore textures
         , marker = Marker.init details.markerStart meshStore.markerMesh
         , userInput = UserInput.init
-        , counter = Counter.init ( 0, 0 ) textures meshStore.counterMesh
         }
 
 
@@ -86,7 +86,8 @@ animate time game =
         { game
             | camera = Camera.animate time game.userInput game.camera
             , marker = Marker.yaw time movedMarker
-            , counter = Counter.animate time game.counter
+
+            --, counter = Counter.animate time game.counter
         }
 
 
@@ -203,33 +204,17 @@ render game =
 
 entities : Game -> List Entity
 entities game =
-    case Counter.render game.pMatrix game.camera.vMatrix game.counter of
-        Just c ->
-            [ -- The rendering order is really important. First the board must
-              -- be rendered (without filling the depth buffer).
-              Board.render game.pMatrix game.camera.vMatrix game.board
-            , c
+    [ -- The rendering order is really important. First the board must
+      -- be rendered (without filling the depth buffer).
+      Board.render game.pMatrix game.camera.vMatrix game.board
 
-            -- Render the reflection, which is blending with the board.
-            , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
+    -- Render the reflection, which is blending with the board.
+    , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
 
-            -- Last render the Marker. Its color must never blend when rendering
-            -- the reflection.
-            , Marker.render game.pMatrix game.camera.vMatrix game.marker
-            ]
-
-        Nothing ->
-            [ -- The rendering order is really important. First the board must
-              -- be rendered (without filling the depth buffer).
-              Board.render game.pMatrix game.camera.vMatrix game.board
-
-            -- Render the reflection, which is blending with the board.
-            , Marker.renderReflection game.pMatrix game.camera.vMatrix game.marker
-
-            -- Last render the Marker. Its color must never blend when rendering
-            -- the reflection.
-            , Marker.render game.pMatrix game.camera.vMatrix game.marker
-            ]
+    -- Last render the Marker. Its color must never blend when rendering
+    -- the reflection.
+    , Marker.render game.pMatrix game.camera.vMatrix game.marker
+    ]
 
 
 aspectRatio : Float
