@@ -66,6 +66,9 @@ type
     = TexturesLoaded (Result Error (List Texture))
       -- Fire every second while in Playing state.
     | Second
+      -- Every second generate a time tick event with a pair of random
+      -- numbers, the first in range [0, 100], the other in range [0, maxInt].
+    | TimeTick ( Int, Int )
       -- Time difference in fractions of s since the last animation event.
     | Animate Time
       -- Request to start a new game.

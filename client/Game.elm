@@ -64,8 +64,8 @@ new level meshStore textures =
 
 {-| Take care of the timeTick event. Evolve game logic.
 -}
-timeTick : Game -> Game
-timeTick game =
+timeTick : ( Int, Int ) -> Game -> Game
+timeTick randoms game =
     game
 
 

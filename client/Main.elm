@@ -10,6 +10,7 @@ import Html.Events as Events
 import Keyboard
 import Keys
 import Mouse
+import Random
 import Task
 import Time
 import Types exposing (State(..), Model, Msg(..))
@@ -62,6 +63,12 @@ update msg model =
 
         Second ->
             ( model
+            , Random.generate TimeTick <|
+                Random.pair (Random.int 0 100) (Random.int 0 Random.maxInt)
+            )
+
+        TimeTick randoms ->
+            ( { model | game = Maybe.map (Game.timeTick randoms) model.game }
             , Cmd.none
             )
 
