@@ -2,8 +2,6 @@ module Game.Board
     exposing
         ( Vertex
         , Board
-        , BoardWidth(..)
-        , GameWidth(..)
         , init
         , clampPosition
         , render
@@ -13,6 +11,7 @@ module Game.Board
 {-| The Board module implements everything needed for a Board instance.
 -}
 
+import Game.Types exposing (BoardWidth(..), GameWidth(..))
 import Math.Vector3 exposing (Vec3, vec3)
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
@@ -37,26 +36,13 @@ type alias Board =
     }
 
 
-{-| Width of the board. This is a scale factor, and it will scale the
-board in x, y and z dimensions equally. Shall have no effect on y though.
--}
-type BoardWidth
-    = BoardWidth Float
-
-
-{-| Width of the playing field on the board.
--}
-type GameWidth
-    = GameWidth Float
-
-
 {-| Create a new Board. Use an already made mesh from the store.
 -}
 init : BoardWidth -> GameWidth -> Mesh Vertex -> Board
 init (BoardWidth outer) (GameWidth inner) mesh =
     { mesh = mesh
-    , modelMatrix = Mat.makeScale3 outer outer outer
-    , gameRadius = inner / 2 -- Just use the radius.
+    , modelMatrix = Mat.makeScale3 (toFloat outer) (toFloat outer) (toFloat outer)
+    , gameRadius = (toFloat inner) / 2 -- Just use the radius.
     }
 
 

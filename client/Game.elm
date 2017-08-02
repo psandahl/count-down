@@ -11,7 +11,7 @@ module Game
         )
 
 import Array exposing (Array)
-import Game.Board exposing (Board, BoardWidth(..), GameWidth(..))
+import Game.Board exposing (Board)
 import Game.Board as Board
 import Game.Camera exposing (Camera)
 import Game.Camera as Camera
@@ -21,6 +21,7 @@ import Game.Level exposing (Level)
 import Game.Marker exposing (Marker)
 import Game.Marker as Marker
 import Game.MeshStore exposing (MeshStore)
+import Game.Types exposing (BoardWidth(..), GameWidth(..), Speed)
 import Game.UserInput exposing (UserInput)
 import Game.UserInput as UserInput
 import Html exposing (Html)
@@ -45,10 +46,6 @@ type alias Game =
     , userInput : UserInput
     , counter : Counter -- Dummy
     }
-
-
-type alias Speed =
-    Float
 
 
 new : Level -> MeshStore -> Array Texture -> Game

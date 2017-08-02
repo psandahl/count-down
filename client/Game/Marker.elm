@@ -11,6 +11,7 @@ module Game.Marker
         , makeMesh
         )
 
+import Game.Types exposing (Speed)
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Math.Vector3 exposing (Vec3, vec3)
@@ -169,7 +170,7 @@ adjustHeight amount vec =
         Vec.setY y vec
 
 
-yawSpeed : Float
+yawSpeed : Speed
 yawSpeed =
     90
 
