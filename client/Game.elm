@@ -17,7 +17,8 @@ import Game.Camera exposing (Camera)
 import Game.Camera as Camera
 import Game.Counter exposing (Counter)
 import Game.Counter as Counter
-import Game.Level exposing (Level)
+import Game.Level exposing (Level, Details)
+import Game.Level as Level
 import Game.Marker exposing (Marker)
 import Game.Marker as Marker
 import Game.MeshStore exposing (MeshStore)
@@ -50,13 +51,17 @@ type alias Game =
 
 new : Level -> MeshStore -> Array Texture -> Game
 new level meshStore textures =
-    { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
-    , camera = Camera.init
-    , board = Board.init (BoardWidth 11) (GameWidth 10) meshStore.boardMesh
-    , marker = Marker.init ( 0, 0 ) meshStore.markerMesh
-    , userInput = UserInput.init
-    , counter = Counter.init ( 0, 0 ) textures meshStore.counterMesh
-    }
+    let
+        details =
+            Level.details level
+    in
+        { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
+        , camera = Camera.init
+        , board = Board.init details.boardWidth details.gameWidth meshStore.boardMesh
+        , marker = Marker.init details.markerStart meshStore.markerMesh
+        , userInput = UserInput.init
+        , counter = Counter.init ( 0, 0 ) textures meshStore.counterMesh
+        }
 
 
 {-| Take care of the timeTick event. Evolve game logic.
