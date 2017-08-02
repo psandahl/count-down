@@ -1,4 +1,11 @@
-module Game.Types exposing (BoardWidth(..), GameWidth(..), Speed)
+module Game.Types
+    exposing
+        ( BoardWidth(..)
+        , GameWidth(..)
+        , Probability(..)
+        , Speed
+        , testProbability
+        )
 
 {-| Width of the board. This is a scale factor, and it will scale the
 board in x, y and z dimensions equally. Shall have no effect on y though.
@@ -15,7 +22,16 @@ type GameWidth
     = GameWidth Int
 
 
+type Probability
+    = OneTo Int
+
+
 {-| Speed, units per second.
 -}
 type alias Speed =
     Float
+
+
+testProbability : Probability -> Int -> Bool
+testProbability (OneTo p) x =
+    x % p == 0
