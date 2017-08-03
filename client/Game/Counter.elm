@@ -4,6 +4,7 @@ module Game.Counter
         , Counter
         , init
         , timeTick
+        , stop
         , animate
         , render
         , makeMesh
@@ -95,6 +96,29 @@ timeTick counter =
 
         Expired count ->
             { counter | state = Expired (count - 1) }
+
+        Stopped 1 ->
+            { counter | state = Finished Win }
+
+        Stopped count ->
+            { counter | state = Stopped (count - 1) }
+
+        _ ->
+            counter
+
+
+{-| Stop the counter if it's counting.
+-}
+stop : Counter -> Counter
+stop counter =
+    case counter.state of
+        Counting count ->
+            { counter
+                | currentTexture = 11
+                , fgColor = green
+                , colorFade = 1
+                , state = Stopped 1
+            }
 
         _ ->
             counter

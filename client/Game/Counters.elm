@@ -1,4 +1,13 @@
-module Game.Counters exposing (Counters, init, tickTime, animate, render, counterCoords)
+module Game.Counters
+    exposing
+        ( Counters
+        , init
+        , tickTime
+        , markerMoved
+        , animate
+        , render
+        , counterCoords
+        )
 
 import Array exposing (Array)
 import Dict exposing (Dict)
@@ -35,6 +44,22 @@ init level meshStore textures =
 tickTime : ( Int, Int ) -> Counters -> Counters
 tickTime randoms counters =
     addNewCounter randoms <| advanceCounters counters
+
+
+markerMoved : ( Float, Float ) -> Counters -> Counters
+markerMoved coord counters =
+    let
+        index =
+            coordIndex counters.details.gameWidth coord
+    in
+        { counters
+            | counterMap = Dict.update index (Maybe.map Counter.stop) counters.counterMap
+        }
+
+
+stopCounter : Maybe Counter -> Maybe Counter
+stopCounter counter =
+    Maybe.map Counter.stop counter
 
 
 animate : Time -> Counters -> Counters
@@ -88,6 +113,23 @@ counterCoords (GameWidth w) index =
         ( (col - mid) + 0.5, (row - mid) + 0.5 )
 
 
+coordIndex : GameWidth -> ( Float, Float ) -> Int
+coordIndex (GameWidth w) ( x, z ) =
+    let
+        mid =
+            toFloat w / 2
+
+        col =
+            floor <| mid + x
+
+        row =
+            floor <| mid + z
+    in
+        row * w + col
+
+
+{-| Advance the counters with one time tick.
+-}
 advanceCounters : Counters -> Counters
 advanceCounters counters =
     { counters
@@ -95,6 +137,8 @@ advanceCounters counters =
     }
 
 
+{-| Add a new counter using the random pair.
+-}
 addNewCounter : ( Int, Int ) -> Counters -> Counters
 addNewCounter ( prob, slot ) counters =
     if testProbability counters.details.probability prob then

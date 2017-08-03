@@ -2,7 +2,6 @@ module Main exposing (main)
 
 import AnimationFrame
 import Array
-import Debug
 import Game
 import Game.Level as Level
 import Game.MeshStore as MeshStore
@@ -69,7 +68,7 @@ update msg model =
             )
 
         TimeTick randoms ->
-            ( { model | game = Maybe.map (Game.timeTick (Debug.log "randoms" randoms)) model.game }
+            ( { model | game = Maybe.map (Game.timeTick randoms) model.game }
             , Cmd.none
             )
 

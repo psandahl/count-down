@@ -54,7 +54,7 @@ clampPosition board ( x, z ) =
         r =
             board.gameRadius
     in
-        ( clamp -r r x, clamp -r r z )
+        ( clamp -r (r - 0.01) x, clamp -r (r - 0.01) z )
 
 
 render : Mat4 -> Mat4 -> Board -> Entity
