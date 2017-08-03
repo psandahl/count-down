@@ -57,11 +57,6 @@ markerMoved coord counters =
         }
 
 
-stopCounter : Maybe Counter -> Maybe Counter
-stopCounter counter =
-    Maybe.map Counter.stop counter
-
-
 animate : Time -> Counters -> Counters
 animate time counters =
     { counters
