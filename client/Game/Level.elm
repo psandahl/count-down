@@ -28,7 +28,7 @@ nextLevel (Level n) =
 details : Level -> Details
 details level =
     { boardWidth = BoardWidth 11
-    , gameWidth = GameWidth 10
+    , gameWidth = GameWidth 4
     , markerStart = ( 0, 0 )
     , probability = OneTo 10
     }

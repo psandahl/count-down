@@ -106,4 +106,4 @@ counterCoords (GameWidth w) index =
         mid =
             toFloat w / 2
     in
-        ( (row - mid) + 0.5, (col - mid) + 0.5 )
+        ( (col - mid) + 0.5, (row - mid) + 0.5 )
