@@ -32,10 +32,10 @@ type alias Counter =
     { mesh : Mesh Vertex
     , modelMatrix : Mat4
     , textures : Array Texture
-    , currentCount : Int
+    , currentTexture : Int
     , bgColor : Vec3
     , fgColor : Vec3
-    , colorMix : Float
+    , colorFade : Float
     }
 
 
@@ -46,28 +46,28 @@ init ( x, z ) textures mesh =
     { mesh = mesh
     , modelMatrix = Mat.makeTranslate3 x 0 z
     , textures = textures
-    , currentCount = 0
+    , currentTexture = 0
     , bgColor = vec3 0 0 0
     , fgColor = vec3 0 0.8 0
-    , colorMix = 1
+    , colorFade = 1
     }
 
 
 animate : Time -> Counter -> Counter
 animate time counter =
     let
-        newCount =
-            counter.colorMix - time
+        newFade =
+            counter.colorFade - time
     in
-        if newCount < 0 then
-            { counter | colorMix = 1 }
+        if newFade < 0 then
+            { counter | colorFade = 1 }
         else
-            { counter | colorMix = newCount }
+            { counter | colorFade = newFade }
 
 
 render : Mat4 -> Mat4 -> Counter -> Maybe Entity
 render pMatrix vMatrix counter =
-    case get counter.currentCount counter.textures of
+    case get counter.currentTexture counter.textures of
         Just texture ->
             let
                 mvpMatrix =
@@ -82,7 +82,7 @@ render pMatrix vMatrix counter =
                         , texture = texture
                         , bgColor = counter.bgColor
                         , fgColor = counter.fgColor
-                        , colorMix = counter.colorMix
+                        , colorFade = counter.colorFade
                         }
 
         Nothing ->
@@ -130,7 +130,7 @@ fragmentShader :
             | texture : Texture
             , bgColor : Vec3
             , fgColor : Vec3
-            , colorMix : Float
+            , colorFade : Float
         }
         { vTexCoord : Vec2 }
 fragmentShader =
@@ -140,7 +140,7 @@ fragmentShader =
         uniform sampler2D texture;
         uniform vec3 bgColor;
         uniform vec3 fgColor;
-        uniform float colorMix;
+        uniform float colorFade;
 
         varying vec2 vTexCoord;
 
@@ -149,7 +149,7 @@ fragmentShader =
             float alpha = texture2D(texture, vTexCoord).a;
             if (alpha > 0.5)
             {
-                gl_FragColor = vec4(mix(bgColor, fgColor, colorMix), 1.0);
+                gl_FragColor = vec4(mix(bgColor, fgColor, colorFade), 1.0);
             }
             else
             {

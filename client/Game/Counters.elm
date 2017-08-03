@@ -98,12 +98,12 @@ counterCoords : GameWidth -> Int -> ( Float, Float )
 counterCoords (GameWidth w) index =
     let
         row =
-            toFloat <| index % w
+            toFloat <| index // w
 
         col =
-            toFloat <| index // w
+            toFloat <| index % w
 
         mid =
             toFloat w / 2
     in
-        ( row - mid + 0.5, col - mid + 0.5 )
+        ( (row - mid) + 0.5, (col - mid) + 0.5 )
