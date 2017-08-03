@@ -3,6 +3,7 @@ module Game.Counter
         ( Vertex
         , Counter
         , init
+        , timeTick
         , animate
         , render
         , makeMesh
@@ -13,6 +14,7 @@ import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Math.Vector2 exposing (Vec2, vec2)
 import Math.Vector3 exposing (Vec3, vec3)
+import Math.Vector3 as Vec
 import Time exposing (Time)
 import WebGL exposing (Entity, Mesh, Texture, Shader)
 import WebGL as GL
@@ -36,7 +38,20 @@ type alias Counter =
     , bgColor : Vec3
     , fgColor : Vec3
     , colorFade : Float
+    , state : State
     }
+
+
+type State
+    = Counting Int
+    | Expired Int
+    | Stopped Int
+    | Finished Win
+
+
+type Win
+    = Win
+    | Lose
 
 
 {-| Initialize the Counter.
@@ -46,23 +61,55 @@ init ( x, z ) textures mesh =
     { mesh = mesh
     , modelMatrix = Mat.makeTranslate3 x 0 z
     , textures = textures
-    , currentTexture = 0
+    , currentTexture = 10
     , bgColor = vec3 0 0 0
-    , fgColor = vec3 0 0.8 0
+    , fgColor = green
     , colorFade = 1
+    , state = Counting 10
     }
 
 
+{-| Advancing the state machine for the counter.
+-}
+timeTick : Counter -> Counter
+timeTick counter =
+    case counter.state of
+        Counting 1 ->
+            { counter
+                | currentTexture = 0
+                , fgColor = red
+                , colorFade = 1
+                , state = Expired 1
+            }
+
+        Counting count ->
+            { counter
+                | currentTexture = count - 1
+                , fgColor = mix red green (toFloat count / 10)
+                , colorFade = 1
+                , state = Counting (count - 1)
+            }
+
+        Expired 0 ->
+            { counter | state = Finished Lose }
+
+        Expired count ->
+            { counter | state = Expired (count - 1) }
+
+        _ ->
+            counter
+
+
+{-| The animate event is just about to fade the counter.
+-}
 animate : Time -> Counter -> Counter
 animate time counter =
-    let
-        newFade =
-            counter.colorFade - time
-    in
-        if newFade < 0 then
-            { counter | colorFade = 1 }
-        else
-            { counter | colorFade = newFade }
+    case counter.state of
+        Counting count ->
+            { counter | colorFade = clamp 0 1 <| counter.colorFade - time }
+
+        _ ->
+            counter
 
 
 render : Mat4 -> Mat4 -> Counter -> Maybe Entity
@@ -100,6 +147,33 @@ makeMesh =
         , { position = vec3 0.5 0 0.5, texCoord = vec2 1 0 }
         ]
         [ ( 0, 1, 2 ), ( 0, 2, 3 ) ]
+
+
+mix : Vec3 -> Vec3 -> Float -> Vec3
+mix a b f =
+    let
+        mixFactor =
+            clamp 0 1 f
+
+        fromA =
+            1 - mixFactor
+
+        fromB =
+            mixFactor
+    in
+        vec3 (fromA * Vec.getX a + fromB * Vec.getX b)
+            (fromA * Vec.getY a + fromB * Vec.getY b)
+            (fromA * Vec.getZ a + fromB * Vec.getZ b)
+
+
+green : Vec3
+green =
+    vec3 0 (204 / 255) 0
+
+
+red : Vec3
+red =
+    vec3 (204 / 255) 0 0
 
 
 vertexShader :

@@ -33,29 +33,8 @@ init level meshStore textures =
 
 
 tickTime : ( Int, Int ) -> Counters -> Counters
-tickTime ( probability, slot ) counters =
-    if testProbability counters.details.probability probability then
-        let
-            gameWidth =
-                counters.details.gameWidth
-
-            index =
-                randomIndex slot gameWidth
-
-            coord =
-                counterCoords gameWidth index
-        in
-            if Dict.member index counters.counterMap then
-                counters
-            else
-                { counters
-                    | counterMap =
-                        Dict.insert index
-                            (Counter.init coord counters.textures counters.counterMesh)
-                            counters.counterMap
-                }
-    else
-        counters
+tickTime randoms counters =
+    addNewCounter randoms <| advanceCounters counters
 
 
 animate : Time -> Counters -> Counters
@@ -107,3 +86,36 @@ counterCoords (GameWidth w) index =
             toFloat w / 2
     in
         ( (col - mid) + 0.5, (row - mid) + 0.5 )
+
+
+advanceCounters : Counters -> Counters
+advanceCounters counters =
+    { counters
+        | counterMap = Dict.map (\key counter -> Counter.timeTick counter) counters.counterMap
+    }
+
+
+addNewCounter : ( Int, Int ) -> Counters -> Counters
+addNewCounter ( prob, slot ) counters =
+    if testProbability counters.details.probability prob then
+        let
+            gameWidth =
+                counters.details.gameWidth
+
+            index =
+                randomIndex slot gameWidth
+
+            coord =
+                counterCoords gameWidth index
+        in
+            if Dict.member index counters.counterMap then
+                counters
+            else
+                { counters
+                    | counterMap =
+                        Dict.insert index
+                            (Counter.init coord counters.textures counters.counterMesh)
+                            counters.counterMap
+                }
+    else
+        counters
