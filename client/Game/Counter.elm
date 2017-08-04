@@ -102,7 +102,7 @@ advanceState counter =
         Expired count ->
             { counter | state = Expired (count - 1) }
 
-        Stopped 1 ->
+        Stopped 0 ->
             { counter | state = Finished }
 
         Stopped count ->

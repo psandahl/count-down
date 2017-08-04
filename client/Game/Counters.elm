@@ -12,7 +12,7 @@ module Game.Counters
 import Array exposing (Array)
 import Dict exposing (Dict)
 import Dict
-import Game.Counter exposing (Counter, Vertex)
+import Game.Counter exposing (Counter, State(..), Vertex)
 import Game.Counter as Counter
 import Game.Level exposing (Level, Details)
 import Game.Level as Level
@@ -50,7 +50,20 @@ init level meshStore textures =
 -}
 tickTime : ( Int, Int ) -> Counters -> Counters
 tickTime randoms counters =
-    addNewCounter randoms <| advanceCounters counters
+    let
+        -- First, advance all the Counter's states.
+        advancedCounters =
+            advanceCounters counters.counterMap
+
+        -- Then inspect the Counter's states and find out some figures.
+        ( expired, stopped, finished ) =
+            inspectCounters advancedCounters
+
+        -- Remove the Counters marked as finished.
+        removedCounters =
+            removeCounters advancedCounters finished
+    in
+        addNewCounter randoms { counters | counterMap = removedCounters }
 
 
 {-| The marker has been moved to the given position. If it's hitting a counting
@@ -141,11 +154,9 @@ coordIndex (GameWidth w) ( x, z ) =
 
 {-| Advance the counters with one time tick.
 -}
-advanceCounters : Counters -> Counters
-advanceCounters counters =
-    { counters
-        | counterMap = Dict.map (\key counter -> Counter.advanceState counter) counters.counterMap
-    }
+advanceCounters : Dict Int Counter -> Dict Int Counter
+advanceCounters =
+    Dict.map (\key counter -> Counter.advanceState counter)
 
 
 {-| Add a new counter using the random pair.
@@ -174,3 +185,40 @@ addNewCounter ( prob, slot ) counters =
                 }
     else
         counters
+
+
+{-| Inspect the state of the counters and return a tuple of:
+(number of expired counters, number of stopped counters, the list of couter
+keys that have finished)
+-}
+inspectCounters : Dict Int Counter -> ( Int, Int, List Int )
+inspectCounters =
+    Dict.foldl inspectCounter ( 0, 0, [] )
+
+
+inspectCounter : Int -> Counter -> ( Int, Int, List Int ) -> ( Int, Int, List Int )
+inspectCounter key counter ( expired, stopped, finished ) =
+    -- Perhaps look confusing of the different matching for Expired and Stopped,
+    -- but that's because they are generated differently. Expiration is generated
+    -- in the advance call and the first value will be 1. Stopped is generated
+    -- in the stop call, and will be decreased in the first advance call. That's
+    -- why.
+    case counter.state of
+        Expired 1 ->
+            ( expired + 1, stopped, finished )
+
+        Stopped 0 ->
+            ( expired, stopped + 1, finished )
+
+        Finished ->
+            ( expired, stopped, key :: finished )
+
+        _ ->
+            ( expired, stopped, finished )
+
+
+{-| Remove the Counters whos keys are in the list.
+-}
+removeCounters : Dict Int Counter -> List Int -> Dict Int Counter
+removeCounters dict =
+    List.foldl Dict.remove dict
