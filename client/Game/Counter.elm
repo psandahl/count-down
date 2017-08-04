@@ -2,10 +2,11 @@ module Game.Counter
     exposing
         ( Vertex
         , Counter
+        , State(..)
         , init
-        , timeTick
+        , advanceState
         , stop
-        , animate
+        , fade
         , render
         , makeMesh
         )
@@ -43,16 +44,20 @@ type alias Counter =
     }
 
 
-type State
+{-| The runtime state of a counter.
+-}
+type
+    State
+    -- The counter is counting.
     = Counting Int
+      -- The counter is expired. Wait the specified number of seconds before
+      -- go to Finished.
     | Expired Int
+      -- The counter is stopped by the marker. Wait the specified number
+      -- of the seconds before go to Finished.
     | Stopped Int
-    | Finished Win
-
-
-type Win
-    = Win
-    | Lose
+      -- The counter is finished and shall be removed.
+    | Finished
 
 
 {-| Initialize the Counter.
@@ -70,10 +75,10 @@ init ( x, z ) textures mesh =
     }
 
 
-{-| Advancing the state machine for the counter.
+{-| TimeTick event. Advance the state machine for the counter.
 -}
-timeTick : Counter -> Counter
-timeTick counter =
+advanceState : Counter -> Counter
+advanceState counter =
     case counter.state of
         Counting 1 ->
             { counter
@@ -92,13 +97,13 @@ timeTick counter =
             }
 
         Expired 0 ->
-            { counter | state = Finished Lose }
+            { counter | state = Finished }
 
         Expired count ->
             { counter | state = Expired (count - 1) }
 
         Stopped 1 ->
-            { counter | state = Finished Win }
+            { counter | state = Finished }
 
         Stopped count ->
             { counter | state = Stopped (count - 1) }
@@ -124,10 +129,10 @@ stop counter =
             counter
 
 
-{-| The animate event is just about to fade the counter.
+{-| Animation event. Fade the counter with the given time.
 -}
-animate : Time -> Counter -> Counter
-animate time counter =
+fade : Time -> Counter -> Counter
+fade time counter =
     case counter.state of
         Counting count ->
             { counter | colorFade = clamp 0 1 <| counter.colorFade - time }
@@ -136,6 +141,8 @@ animate time counter =
             counter
 
 
+{-| Render the counter.
+-}
 render : Mat4 -> Mat4 -> Counter -> Maybe Entity
 render pMatrix vMatrix counter =
     case get counter.currentTexture counter.textures of
