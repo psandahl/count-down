@@ -46,9 +46,10 @@ init level meshStore textures =
     }
 
 
-{-| TickTime event. Advance game logic.
+{-| TickTime event. Advance game logic. Return the new Counters and a tuple
+of the number of expired and stopped counters as result of this tickTime event.
 -}
-tickTime : ( Int, Int ) -> Counters -> Counters
+tickTime : ( Int, Int ) -> Counters -> ( Counters, ( Int, Int ) )
 tickTime randoms counters =
     let
         -- First, advance all the Counter's states.
@@ -63,7 +64,9 @@ tickTime randoms counters =
         removedCounters =
             removeCounters advancedCounters finished
     in
-        addNewCounter randoms { counters | counterMap = removedCounters }
+        ( addNewCounter randoms { counters | counterMap = removedCounters }
+        , ( expired, stopped )
+        )
 
 
 {-| The marker has been moved to the given position. If it's hitting a counting

@@ -68,7 +68,11 @@ new level meshStore textures =
 -}
 timeTick : ( Int, Int ) -> Game -> Game
 timeTick randoms game =
-    { game | counters = Counters.tickTime randoms game.counters }
+    let
+        ( cs, result ) =
+            Counters.tickTime randoms game.counters
+    in
+        { game | counters = cs }
 
 
 {-| Take care of the animate event. Animate subcomponents and evolve game
