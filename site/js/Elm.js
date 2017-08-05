@@ -14274,99 +14274,126 @@ var _psandahl$count_down$Main$subscriptions = function (model) {
 	}
 };
 var _psandahl$count_down$Main$view = function (model) {
-	var _p4 = model.state;
-	switch (_p4.ctor) {
-		case 'Error':
-			return _elm_lang$html$Html$text(_p4._0);
-		case 'ReadyForPlay':
-			return A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('fullscreen'),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('container'),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: A2(
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('fullscreen'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: function () {
+				var _p4 = model.state;
+				switch (_p4.ctor) {
+					case 'ReadyForPlay':
+						var _p5 = _p4._0;
+						return A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('splash'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$h1,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('splash'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(
+												_psandahl$count_down$Types$StartNewGame(_p5)),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text(
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												'Start level: ',
+												_elm_lang$core$Basics$toString(
+													_psandahl$count_down$Game_Level$asInt(_p5)))),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							});
+					case 'Playing':
+						var _p6 = model.game;
+						if (_p6.ctor === 'Just') {
+							return A2(
 								_elm_lang$html$Html$div,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('splash'),
+									_0: _elm_lang$html$Html_Attributes$class('game'),
 									_1: {ctor: '[]'}
 								},
 								{
 									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$h1,
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('splash'),
-											_1: {ctor: '[]'}
-										},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text('foo'),
-											_1: {ctor: '[]'}
-										}),
+									_0: _psandahl$count_down$Game$render(_p6._0),
 									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				});
-		case 'Playing':
-			var _p5 = model.game;
-			if (_p5.ctor === 'Just') {
-				return A2(
-					_elm_lang$html$Html$div,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _psandahl$count_down$Game$render(_p5._0),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$p,
-								{ctor: '[]'},
-								{ctor: '[]'}),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									_elm_lang$core$Basics$toString(model.timeDiff)),
-								_1: {ctor: '[]'}
-							}
+								});
+						} else {
+							return A2(
+								_elm_lang$html$Html$h1,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('shout'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Unexpected error!'),
+									_1: {ctor: '[]'}
+								});
 						}
-					});
-			} else {
-				return _elm_lang$html$Html$text('Should never happen ...');
-			}
-		default:
-			return _elm_lang$html$Html$text('Waiting ...');
-	}
+					case 'Error':
+						return A2(
+							_elm_lang$html$Html$h1,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('shout'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(_p4._0),
+								_1: {ctor: '[]'}
+							});
+					default:
+						return A2(
+							_elm_lang$html$Html$h1,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('shout'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Loading ...'),
+								_1: {ctor: '[]'}
+							});
+				}
+			}(),
+			_1: {ctor: '[]'}
+		});
 };
 var _psandahl$count_down$Main$update = F2(
 	function (msg, model) {
-		var _p6 = msg;
-		switch (_p6.ctor) {
+		var _p7 = msg;
+		switch (_p7.ctor) {
 			case 'TexturesLoaded':
-				var _p7 = _p6._0;
-				if (_p7.ctor === 'Ok') {
+				var _p8 = _p7._0;
+				if (_p8.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								textures: _elm_lang$core$Array$fromList(_p7._0),
+								textures: _elm_lang$core$Array$fromList(_p8._0),
 								state: _psandahl$count_down$Types$ReadyForPlay(_psandahl$count_down$Game_Level$init)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
@@ -14402,13 +14429,13 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								_psandahl$count_down$Game$timeTick(_p6._0),
+								_psandahl$count_down$Game$timeTick(_p7._0),
 								model.game)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Animate':
-				var _p8 = _p6._0;
+				var _p9 = _p7._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14416,22 +14443,22 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								_psandahl$count_down$Game$animate(_p8),
+								_psandahl$count_down$Game$animate(_p9),
 								model.game),
-							timeDiff: _p8
+							timeDiff: _p9
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'StartNewGame':
-				var _p9 = _p6._0;
+				var _p10 = _p7._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
 							game: _elm_lang$core$Maybe$Just(
-								A3(_psandahl$count_down$Game$new, _p9, model.meshStore, model.textures)),
-							state: _psandahl$count_down$Types$Playing(_p9)
+								A3(_psandahl$count_down$Game$new, _p10, model.meshStore, model.textures)),
+							state: _psandahl$count_down$Types$Playing(_p10)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -14440,11 +14467,11 @@ var _psandahl$count_down$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{trackingMouse: true, mousePosition: _p6._0}),
+						{trackingMouse: true, mousePosition: _p7._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MouseReleased':
-				var _p10 = _p6._0;
+				var _p11 = _p7._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14453,14 +14480,14 @@ var _psandahl$count_down$Main$update = F2(
 							trackingMouse: false,
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p10),
+								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p11),
 								model.game),
-							mousePosition: _p10
+							mousePosition: _p11
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MouseMoved':
-				var _p11 = _p6._0;
+				var _p12 = _p7._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14468,9 +14495,9 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p11),
+								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p12),
 								model.game),
-							mousePosition: _p11
+							mousePosition: _p12
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -14482,7 +14509,7 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								_psandahl$count_down$Game$keyPressed(_p6._0),
+								_psandahl$count_down$Game$keyPressed(_p7._0),
 								model.game)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
@@ -14495,7 +14522,7 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								_psandahl$count_down$Game$keyReleased(_p6._0),
+								_psandahl$count_down$Game$keyReleased(_p7._0),
 								model.game)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none

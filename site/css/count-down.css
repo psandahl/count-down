@@ -7,7 +7,31 @@ div.fullscreen {
   top: 0;
 }
 
-div.container {
+div.splash {
+  position: relative;
+  background-color: yellow;
+  width: 1024px;
+  height: 768px;
+  margin-left: auto;
+  margin-right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+div.game {
+  position: relative;
+  background-color: green;
+  width: 1024px;
+  height: 768px;
+  margin-left: auto;
+  margin-right: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+h1.splash {
+  color: white;
+  text-align: center;
   position: relative;
   margin-left: auto;
   margin-right: auto;
@@ -15,18 +39,8 @@ div.container {
   transform: translateY(-50%);
 }
 
-div.splash {
-  /*position: relative;*/
-  background-color: yellow;
-  width: 1024px;
-  height: 768px;
-  margin-left: auto;
-  margin-right: auto;
-  /*top: 50%;
-  transform: translateY(-50%);*/
-}
-
-h1.splash {
+h1.shout {
+  color: red;
   text-align: center;
   position: relative;
   margin-left: auto;

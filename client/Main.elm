@@ -132,33 +132,70 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    case model.state of
-        Error err ->
-            Html.text err
-
-        ReadyForPlay level ->
-            Html.div [ Attr.class "fullscreen" ]
-                [ Html.div [ Attr.class "container" ]
-                    [ Html.div [ Attr.class "splash" ]
-                        []
-                    , Html.h1 [ Attr.class "splash" ] [ Html.text "foo" ]
-                    ]
-                ]
-
-        Playing level ->
-            case model.game of
-                Just game ->
-                    Html.div []
-                        [ Game.render game
-                        , Html.p [] []
-                        , Html.text <| toString model.timeDiff
+    Html.div [ Attr.class "fullscreen" ]
+        [ case model.state of
+            ReadyForPlay level ->
+                Html.div [ Attr.class "splash" ]
+                    [ Html.h1
+                        [ Attr.class "splash"
+                        , Events.onClick <| StartNewGame level
                         ]
+                        [ Html.text <|
+                            "Start level: "
+                                ++ toString (Level.asInt level)
+                        ]
+                    ]
 
-                Nothing ->
-                    Html.text "Should never happen ..."
+            Playing level ->
+                case model.game of
+                    Just game ->
+                        Html.div [ Attr.class "game" ]
+                            [ Game.render game ]
 
-        _ ->
-            Html.text "Waiting ..."
+                    Nothing ->
+                        Html.h1 [ Attr.class "shout" ]
+                            [ Html.text "Unexpected error!" ]
+
+            Error msg ->
+                Html.h1 [ Attr.class "shout" ] [ Html.text msg ]
+
+            _ ->
+                Html.h1 [ Attr.class "shout" ] [ Html.text "Loading ..." ]
+        ]
+
+
+
+{- }
+   case model.state of
+       Error err ->
+           Html.text err
+
+       ReadyForPlay level ->
+           Html.div [ Attr.class "fullscreen" ]
+               [ Html.div [ Attr.class "game" ]
+                   [ Html.canvas [ Attr.class "game" ]
+                       []
+                   , Html.h1
+                       [ Attr.class "splash" ]
+                       [ Html.text "foo" ]
+                   ]
+               ]
+
+       Playing level ->
+           case model.game of
+               Just game ->
+                   Html.div []
+                       [ Game.render game
+                       , Html.p [] []
+                       , Html.text <| toString model.timeDiff
+                       ]
+
+               Nothing ->
+                   Html.text "Should never happen ..."
+
+       _ ->
+           Html.text "Waiting ..."
+-}
 
 
 subscriptions : Model -> Sub Msg
