@@ -18,6 +18,9 @@ main =
         -- Serving local CSS.
         get "/css/:file" $ cssFile =<< param "file"
 
+        -- Serving (PNG) image files.
+        get "/image/:file" $ imageFile =<< param "file"
+
         -- Serving (PNG) texture files.
         get "/texture/:file" $ textureFile =<< param "file"
 
@@ -35,6 +38,11 @@ cssFile :: FilePath -> ActionM ()
 cssFile css = do
     setHeader "Content-Type" "text/css; charset=utf-8"
     file $ "site" </> "css" </> css
+
+imageFile :: FilePath -> ActionM ()
+imageFile image = do
+    setHeader "Content-Type" "image/png"
+    file $ "site" </> "image" </> image
 
 textureFile :: FilePath -> ActionM ()
 textureFile texture = do

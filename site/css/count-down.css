@@ -9,7 +9,7 @@ div.fullscreen {
 
 div.splash {
   position: relative;
-  background-color: yellow;
+  background-image: url('/image/splash.png');
   width: 1024px;
   height: 768px;
   margin-left: auto;

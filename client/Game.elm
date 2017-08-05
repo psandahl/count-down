@@ -31,7 +31,6 @@ import Html.Attributes as Attr
 import Keys exposing (Key(..))
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
-import Math.Vector3 as Vec
 import Mouse exposing (Position)
 import Time exposing (Time)
 import WebGL exposing (Entity)

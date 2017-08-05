@@ -13472,9 +13472,9 @@ var _psandahl$count_down$Game_Level$asInt = function (_p0) {
 var _psandahl$count_down$Game_Level$details = function (level) {
 	return {
 		boardWidth: _psandahl$count_down$Game_Types$BoardWidth(11),
-		gameWidth: _psandahl$count_down$Game_Types$GameWidth(4),
+		gameWidth: _psandahl$count_down$Game_Types$GameWidth(10),
 		markerStart: {ctor: '_Tuple2', _0: 0, _1: 0},
-		probability: _psandahl$count_down$Game_Types$OneTo(10)
+		probability: _psandahl$count_down$Game_Types$OneTo(1)
 	};
 };
 var _psandahl$count_down$Game_Level$Details = F4(
