@@ -1,6 +1,7 @@
 module Game
     exposing
         ( Game
+        , Verdict(..)
         , new
         , timeTick
         , animate
@@ -22,7 +23,7 @@ import Game.Level as Level
 import Game.Marker exposing (Marker)
 import Game.Marker as Marker
 import Game.MeshStore exposing (MeshStore)
-import Game.Types exposing (BoardWidth(..), GameWidth(..), Speed)
+import Game.Types exposing (BoardWidth(..), GameWidth(..), Speed, Seconds)
 import Game.UserInput exposing (UserInput)
 import Game.UserInput as UserInput
 import Html exposing (Html)
@@ -45,7 +46,15 @@ type alias Game =
     , counters : Counters
     , marker : Marker
     , userInput : UserInput
+    , timeLeft : Seconds
+    , currentLevel : Level
     }
+
+
+type Verdict
+    = Continue Int
+    | Won Int
+    | Lose Int
 
 
 new : Level -> MeshStore -> Array Texture -> Game
@@ -60,18 +69,34 @@ new level meshStore textures =
         , counters = Counters.init level meshStore textures
         , marker = Marker.init details.markerStart meshStore.markerMesh
         , userInput = UserInput.init
+        , timeLeft = details.duration
+        , currentLevel = level
         }
 
 
 {-| Take care of the timeTick event. Evolve game logic.
 -}
-timeTick : ( Int, Int ) -> Game -> Game
+timeTick : ( Int, Int ) -> Game -> ( Game, Verdict )
 timeTick randoms game =
     let
-        ( cs, result ) =
+        ( newCounters, ( expired, stopped ) ) =
             Counters.tickTime randoms game.counters
+
+        newTimeLeft =
+            game.timeLeft - 1
+
+        newGame =
+            { game
+                | counters = newCounters
+                , timeLeft = newTimeLeft
+            }
     in
-        { game | counters = cs }
+        if newTimeLeft == 0 then
+            ( newGame, Won stopped )
+        else if expired > 0 then
+            ( newGame, Lose stopped )
+        else
+            ( newGame, Continue stopped )
 
 
 {-| Take care of the animate event. Animate subcomponents and evolve game

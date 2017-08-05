@@ -4,6 +4,7 @@ module Game.Types
         , GameWidth(..)
         , Probability(..)
         , Speed
+        , Seconds
         , testProbability
         )
 
@@ -22,6 +23,8 @@ type GameWidth
     = GameWidth Int
 
 
+{-| Probability.
+-}
 type Probability
     = OneTo Int
 
@@ -30,6 +33,12 @@ type Probability
 -}
 type alias Speed =
     Float
+
+
+{-| Alias for a time count in seconds.
+-}
+type alias Seconds =
+    Int
 
 
 testProbability : Probability -> Int -> Bool

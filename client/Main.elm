@@ -68,9 +68,34 @@ update msg model =
             )
 
         TimeTick randoms ->
-            ( { model | game = Maybe.map (Game.timeTick randoms) model.game }
-            , Cmd.none
-            )
+            case model.game of
+                Just game ->
+                    case Game.timeTick randoms game of
+                        ( newGame, Game.Continue points ) ->
+                            ( { model
+                                | game = Just newGame
+                              }
+                            , Cmd.none
+                            )
+
+                        ( newGame, Game.Won points ) ->
+                            ( { model
+                                | game = Nothing
+                                , state = ReadyForPlay <| Level.next (newGame.currentLevel)
+                              }
+                            , Cmd.none
+                            )
+
+                        ( newGame, Game.Lose points ) ->
+                            ( { model
+                                | game = Nothing
+                                , state = GameOver
+                              }
+                            , Cmd.none
+                            )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         Animate diff ->
             ( { model
