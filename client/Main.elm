@@ -34,7 +34,6 @@ init =
       , mousePosition = { x = 0, y = 0 }
       , textures = Array.empty
       , meshStore = MeshStore.init
-      , level = Level.init
       , game = Nothing
       , timeDiff = 0
       }
@@ -51,7 +50,7 @@ update msg model =
                 Ok ts ->
                     ( { model
                         | textures = Array.fromList ts
-                        , state = ReadyForPlay
+                        , state = ReadyForPlay Level.init
                       }
                     , Cmd.none
                     )
@@ -80,11 +79,10 @@ update msg model =
             , Cmd.none
             )
 
-        StartNewGame ->
+        StartNewGame level ->
             ( { model
-                | game = Just <| Game.new model.level model.meshStore model.textures
-                , level = Level.nextLevel model.level
-                , state = Playing
+                | game = Just <| Game.new level model.meshStore model.textures
+                , state = Playing level
               }
             , Cmd.none
             )
@@ -137,12 +135,12 @@ view model =
         Error err ->
             Html.text err
 
-        ReadyForPlay ->
+        ReadyForPlay level ->
             Html.div []
-                [ Html.button [ Events.onClick StartNewGame ] [ Html.text "Start new game" ]
+                [ Html.button [ Events.onClick <| StartNewGame level ] [ Html.text "Start new game" ]
                 ]
 
-        Playing ->
+        Playing level ->
             case model.game of
                 Just game ->
                     Html.div []
@@ -161,7 +159,7 @@ view model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     case model.state of
-        Playing ->
+        Playing level ->
             let
                 animationSubs =
                     [ Time.every Time.second (always Second)

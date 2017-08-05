@@ -20,9 +20,9 @@ type
     -- The state before things are initialized.
     = Null
       -- Initialization done. Ready for playing.
-    | ReadyForPlay
+    | ReadyForPlay Level
       -- Ongoing game.
-    | Playing
+    | Playing Level
       -- The game is over.
     | GameOver
       -- Some catastrofic error.
@@ -47,9 +47,6 @@ type alias Model =
     --  Cache of the meshes needed for the game.
     , meshStore : MeshStore
 
-    -- The level of the next game to play.
-    , level : Level
-
     -- The ongoing game (if any).
     , game : Maybe Game
 
@@ -72,7 +69,7 @@ type
       -- Time difference in fractions of s since the last animation event.
     | Animate Time
       -- Request to start a new game.
-    | StartNewGame
+    | StartNewGame Level
       -- The mouse button is pressed.
     | MousePressed Position
       -- The mouse button is released.
