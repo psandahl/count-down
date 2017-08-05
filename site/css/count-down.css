@@ -1,23 +1,54 @@
-div.fullscreen {
-  position: fixed;
-  background-color: black;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
+body {
+  background-color: white;
+  margin: 0;
 }
 
-div.splash {
+div.container {
   position: relative;
-  background-image: url('/image/splash.png');
   width: 1024px;
   height: 768px;
   margin-left: auto;
   margin-right: auto;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0%;
+  transform: translateY(50%);
 }
 
+canvas.game {
+  display: block;
+  cursor: move;
+}
+
+div.splash {
+  background-image: url('/image/splash.png');
+  width: 100%;
+  height: 100%;
+}
+
+h1.splash {
+  position: relative;
+  color: white;
+  top: 50%;
+  text-align: center;
+}
+
+h1.error {
+  position: relative;
+  color: red;
+  top: 50%;
+  text-align: center;
+}
+
+div.overlay {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  background-color: rgb(255, 1, 1);
+  color: white;
+  font-family: monospace;
+  padding: 1em;
+}
+
+/*
 div.game {
   cursor: move;
   position: relative;
@@ -54,3 +85,14 @@ h1.shout {
   top: 50%;
   transform: translateY(-50%);
 }
+
+div.hud {
+  background-color: : white;
+  position: absolute;
+  z-index: 1;
+  left: 10px;
+  top: 10px;
+  width: 100px;
+  height: 100px;
+}
+*/

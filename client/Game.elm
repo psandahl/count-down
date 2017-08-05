@@ -226,6 +226,7 @@ render game =
         ]
         [ Attr.height height
         , Attr.width width
+        , Attr.class "game"
         ]
     <|
         entities game

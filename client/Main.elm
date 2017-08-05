@@ -145,36 +145,74 @@ advanceGame randoms game model =
 
 view : Model -> Html Msg
 view model =
-    Html.div [ Attr.class "fullscreen" ]
-        [ case model.state of
-            ReadyForPlay level ->
-                Html.div [ Attr.class "splash" ]
+    case model.state of
+        ReadyForPlay level ->
+            Html.div [ Attr.class "container" ]
+                [ Html.div [ Attr.class "splash" ]
                     [ Html.h1
                         [ Attr.class "splash"
                         , Events.onClick <| StartNewGame level
                         ]
-                        [ Html.text <|
-                            "Start level: "
-                                ++ toString (Level.asInt level)
-                        ]
+                        [ Html.text "Hek" ]
                     ]
+                ]
 
-            Playing level ->
-                case model.game of
-                    Just game ->
-                        Html.div [ Attr.class "game" ]
-                            [ Game.render game ]
+        Playing level ->
+            case model.game of
+                Just game ->
+                    Html.div [ Attr.class "container" ]
+                        [ Game.render game
+                        , Html.div [ Attr.class "overlay" ]
+                            [ Html.text "Burk"
+                            ]
+                        ]
 
-                    Nothing ->
-                        Html.h1 [ Attr.class "shout" ]
-                            [ Html.text "Unexpected error!" ]
+                Nothing ->
+                    Html.div [ Attr.class "container" ]
+                        [ Html.h1 [ Attr.class "error" ] [ Html.text "???" ]
+                        ]
 
-            Error msg ->
-                Html.h1 [ Attr.class "shout" ] [ Html.text msg ]
+        _ ->
+            Html.div [ Attr.class "container" ]
+                [ Html.h1 [ Attr.class "error" ] [ Html.text "Foo" ]
+                ]
 
-            _ ->
-                Html.h1 [ Attr.class "shout" ] [ Html.text "Loading ..." ]
-        ]
+
+
+{- }
+   Html.div [ Attr.class "fullscreen" ]
+       [ case model.state of
+           ReadyForPlay level ->
+               Html.div [ Attr.class "container" ]
+                   [ Html.h1
+                       [ Attr.class "splash"
+                       , Events.onClick <| StartNewGame level
+                       ]
+                       [ Html.text <|
+                           "Start level: "
+                               ++ toString (Level.asInt level)
+                       ]
+                   ]
+
+           Playing level ->
+               case model.game of
+                   Just game ->
+                       Html.div [ Attr.class "game" ]
+                           [ Game.render game
+                           , Html.div [ Attr.class "hud" ] [ Html.p [] [ Html.text "foo" ] ]
+                           ]
+
+                   Nothing ->
+                       Html.h1 [ Attr.class "shout" ]
+                           [ Html.text "Unexpected error!" ]
+
+           Error msg ->
+               Html.h1 [ Attr.class "shout" ] [ Html.text msg ]
+
+           _ ->
+               Html.h1 [ Attr.class "shout" ] [ Html.text "Loading ..." ]
+       ]
+-}
 
 
 subscriptions : Model -> Sub Msg
