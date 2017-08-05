@@ -14111,16 +14111,20 @@ var _psandahl$count_down$Game$Game = F6(
 		return {pMatrix: a, camera: b, board: c, counters: d, marker: e, userInput: f};
 	});
 
-var _psandahl$count_down$Types$Model = F8(
-	function (a, b, c, d, e, f, g, h) {
-		return {state: a, trackingMouse: b, mousePosition: c, textures: d, meshStore: e, level: f, game: g, timeDiff: h};
+var _psandahl$count_down$Types$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {state: a, trackingMouse: b, mousePosition: c, textures: d, meshStore: e, game: f, timeDiff: g};
 	});
 var _psandahl$count_down$Types$Error = function (a) {
 	return {ctor: 'Error', _0: a};
 };
 var _psandahl$count_down$Types$GameOver = {ctor: 'GameOver'};
-var _psandahl$count_down$Types$Playing = {ctor: 'Playing'};
-var _psandahl$count_down$Types$ReadyForPlay = {ctor: 'ReadyForPlay'};
+var _psandahl$count_down$Types$Playing = function (a) {
+	return {ctor: 'Playing', _0: a};
+};
+var _psandahl$count_down$Types$ReadyForPlay = function (a) {
+	return {ctor: 'ReadyForPlay', _0: a};
+};
 var _psandahl$count_down$Types$Null = {ctor: 'Null'};
 var _psandahl$count_down$Types$KeyReleased = function (a) {
 	return {ctor: 'KeyReleased', _0: a};
@@ -14137,7 +14141,9 @@ var _psandahl$count_down$Types$MouseReleased = function (a) {
 var _psandahl$count_down$Types$MousePressed = function (a) {
 	return {ctor: 'MousePressed', _0: a};
 };
-var _psandahl$count_down$Types$StartNewGame = {ctor: 'StartNewGame'};
+var _psandahl$count_down$Types$StartNewGame = function (a) {
+	return {ctor: 'StartNewGame', _0: a};
+};
 var _psandahl$count_down$Types$Animate = function (a) {
 	return {ctor: 'Animate', _0: a};
 };
@@ -14275,19 +14281,45 @@ var _psandahl$count_down$Main$view = function (model) {
 		case 'ReadyForPlay':
 			return A2(
 				_elm_lang$html$Html$div,
-				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('fullscreen'),
+					_1: {ctor: '[]'}
+				},
 				{
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$button,
+						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(_psandahl$count_down$Types$StartNewGame),
+							_0: _elm_lang$html$Html_Attributes$class('container'),
 							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text('Start new game'),
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('splash'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$h1,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('splash'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('foo'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}),
 							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
@@ -14335,7 +14367,7 @@ var _psandahl$count_down$Main$update = F2(
 							model,
 							{
 								textures: _elm_lang$core$Array$fromList(_p7._0),
-								state: _psandahl$count_down$Types$ReadyForPlay
+								state: _psandahl$count_down$Types$ReadyForPlay(_psandahl$count_down$Game_Level$init)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -14391,15 +14423,15 @@ var _psandahl$count_down$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'StartNewGame':
+				var _p9 = _p6._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
 							game: _elm_lang$core$Maybe$Just(
-								A3(_psandahl$count_down$Game$new, model.level, model.meshStore, model.textures)),
-							level: _psandahl$count_down$Game_Level$nextLevel(model.level),
-							state: _psandahl$count_down$Types$Playing
+								A3(_psandahl$count_down$Game$new, _p9, model.meshStore, model.textures)),
+							state: _psandahl$count_down$Types$Playing(_p9)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -14412,7 +14444,7 @@ var _psandahl$count_down$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MouseReleased':
-				var _p9 = _p6._0;
+				var _p10 = _p6._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14421,14 +14453,14 @@ var _psandahl$count_down$Main$update = F2(
 							trackingMouse: false,
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p9),
+								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p10),
 								model.game),
-							mousePosition: _p9
+							mousePosition: _p10
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MouseMoved':
-				var _p10 = _p6._0;
+				var _p11 = _p6._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14436,9 +14468,9 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p10),
+								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p11),
 								model.game),
-							mousePosition: _p10
+							mousePosition: _p11
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -14478,7 +14510,6 @@ var _psandahl$count_down$Main$init = {
 		mousePosition: {x: 0, y: 0},
 		textures: _elm_lang$core$Array$empty,
 		meshStore: _psandahl$count_down$Game_MeshStore$init,
-		level: _psandahl$count_down$Game_Level$init,
 		game: _elm_lang$core$Maybe$Nothing,
 		timeDiff: 0
 	},

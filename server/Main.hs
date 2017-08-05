@@ -15,6 +15,9 @@ main =
         -- Serving local JavaScript.
         get "/js/:file" $ scriptFile =<< param "file"
 
+        -- Serving local CSS.
+        get "/css/:file" $ cssFile =<< param "file"
+
         -- Serving (PNG) texture files.
         get "/texture/:file" $ textureFile =<< param "file"
 
@@ -25,8 +28,13 @@ startPage = do
 
 scriptFile :: FilePath -> ActionM ()
 scriptFile script = do
-    setHeader "Content-Type" "application/javascript"
+    setHeader "Content-Type" "application/javascript; charset=utf-8"
     file $ "site" </> "js" </> script
+
+cssFile :: FilePath -> ActionM ()
+cssFile css = do
+    setHeader "Content-Type" "text/css; charset=utf-8"
+    file $ "site" </> "css" </> css
 
 textureFile :: FilePath -> ActionM ()
 textureFile texture = do

@@ -6,6 +6,7 @@ import Game
 import Game.Level as Level
 import Game.MeshStore as MeshStore
 import Html exposing (Html)
+import Html.Attributes as Attr
 import Html.Events as Events
 import Keyboard
 import Keys
@@ -136,8 +137,12 @@ view model =
             Html.text err
 
         ReadyForPlay level ->
-            Html.div []
-                [ Html.button [ Events.onClick <| StartNewGame level ] [ Html.text "Start new game" ]
+            Html.div [ Attr.class "fullscreen" ]
+                [ Html.div [ Attr.class "container" ]
+                    [ Html.div [ Attr.class "splash" ]
+                        []
+                    , Html.h1 [ Attr.class "splash" ] [ Html.text "foo" ]
+                    ]
                 ]
 
         Playing level ->
