@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import AnimationFrame
 import Array
+import Game exposing (Game, Verdict(..))
 import Game
 import Game.Level as Level
 import Game.MeshStore as MeshStore
@@ -70,29 +71,7 @@ update msg model =
         TimeTick randoms ->
             case model.game of
                 Just game ->
-                    case Game.timeTick randoms game of
-                        ( newGame, Game.Continue points ) ->
-                            ( { model
-                                | game = Just newGame
-                              }
-                            , Cmd.none
-                            )
-
-                        ( newGame, Game.Won points ) ->
-                            ( { model
-                                | game = Nothing
-                                , state = ReadyForPlay <| Level.next (newGame.currentLevel)
-                              }
-                            , Cmd.none
-                            )
-
-                        ( newGame, Game.Lose points ) ->
-                            ( { model
-                                | game = Nothing
-                                , state = GameOver
-                              }
-                            , Cmd.none
-                            )
+                    ( advanceGame randoms game model, Cmd.none )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -153,6 +132,15 @@ update msg model =
               }
             , Cmd.none
             )
+
+
+advanceGame : ( Int, Int ) -> Game -> Model -> Model
+advanceGame randoms game model =
+    let
+        ( newGame, verdict ) =
+            Game.timeTick randoms game
+    in
+        { model | game = Just newGame }
 
 
 view : Model -> Html Msg
