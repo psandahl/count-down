@@ -14421,7 +14421,7 @@ var _psandahl$count_down$Main$splashHUD = function (model) {
 };
 var _psandahl$count_down$Main$viewError = function (msg) {
 	return A2(
-		_elm_lang$html$Html$h1,
+		_elm_lang$html$Html$p,
 		{
 			ctor: '::',
 			_0: _elm_lang$html$Html_Attributes$class('error'),
@@ -14460,7 +14460,7 @@ var _psandahl$count_down$Main$viewSplash = F2(
 			{
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$h1,
+					_elm_lang$html$Html$p,
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html_Attributes$class('splash'),

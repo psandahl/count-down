@@ -206,7 +206,7 @@ view model =
 viewSplash : Level -> Model -> Html Msg
 viewSplash level model =
     Html.div [ Attr.class "splash" ]
-        [ Html.h1
+        [ Html.p
             [ Attr.class "splash"
             , Events.onClick <| StartNewGame level
             ]
@@ -229,7 +229,7 @@ viewGame level game model =
 
 viewError : String -> Html Msg
 viewError msg =
-    Html.h1 [ Attr.class "error" ] [ Html.text msg ]
+    Html.p [ Attr.class "error" ] [ Html.text msg ]
 
 
 splashHUD : Model -> Html Msg
