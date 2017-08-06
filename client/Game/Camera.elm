@@ -43,7 +43,7 @@ init =
             { baseVector = up
             , magnitude = clampMagnitude 20
             , yaw = 0
-            , pitch = clampPitch 65
+            , pitch = clampPitch 45
             }
     in
         { settings = settings

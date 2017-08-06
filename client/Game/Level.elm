@@ -45,10 +45,10 @@ next (Level n) =
 
 details : Level -> Details
 details level =
-    { boardWidth = BoardWidth 7
-    , gameWidth = GameWidth 6
+    { boardWidth = BoardWidth 9
+    , gameWidth = GameWidth 8
     , markerStart = ( 0, 0 )
-    , probability = OneTo 10
+    , probability = OneTo 8
     , duration = 30
     }
 

@@ -153,6 +153,14 @@ view model =
             ReadyForPlay level ->
                 viewSplash level model
 
+            Playing level ->
+                case model.game of
+                    Just game ->
+                        viewGame game model
+
+                    Nothing ->
+                        viewError "Error: No game. How strange ..."
+
             _ ->
                 viewError "Whut?"
         ]
@@ -171,6 +179,13 @@ viewSplash level model =
                     ++ "?"
             ]
         , splashHUD model
+        ]
+
+
+viewGame : Game -> Model -> Html Msg
+viewGame game model =
+    Html.div []
+        [ Game.render game
         ]
 
 
