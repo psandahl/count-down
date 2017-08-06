@@ -50,6 +50,12 @@ type alias Model =
     -- The ongoing game (if any).
     , game : Maybe Game
 
+    -- The number of lives left (when reaching zero game is over).
+    , lives : Int
+
+    -- The accumulated number of points.
+    , points : Int
+
     -- Store the timediff for the last frame. For debug etc.
     , timeDiff : Float
     }

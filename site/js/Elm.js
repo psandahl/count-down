@@ -14142,9 +14142,9 @@ var _psandahl$count_down$Game$timeTick = F2(
 		});
 	});
 
-var _psandahl$count_down$Types$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {state: a, trackingMouse: b, mousePosition: c, textures: d, meshStore: e, game: f, timeDiff: g};
+var _psandahl$count_down$Types$Model = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {state: a, trackingMouse: b, mousePosition: c, textures: d, meshStore: e, game: f, lives: g, points: h, timeDiff: i};
 	});
 var _psandahl$count_down$Types$Error = function (a) {
 	return {ctor: 'Error', _0: a};
@@ -14304,20 +14304,61 @@ var _psandahl$count_down$Main$subscriptions = function (model) {
 		return _elm_lang$core$Platform_Sub$none;
 	}
 };
-var _psandahl$count_down$Main$view = function (model) {
-	var _p4 = model.state;
-	switch (_p4.ctor) {
-		case 'ReadyForPlay':
-			return A2(
+var _psandahl$count_down$Main$splashHUD = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('overlay'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
 				_elm_lang$html$Html$div,
+				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('container'),
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Points: ',
+							_elm_lang$core$Basics$toString(model.points))),
 					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: A2(
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'Lives: ',
+								_elm_lang$core$Basics$toString(model.lives))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _psandahl$count_down$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('container'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: function () {
+				var _p4 = model.state;
+				if (_p4.ctor === 'ReadyForPlay') {
+					var _p5 = _p4._0;
+					return A2(
 						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
@@ -14334,85 +14375,31 @@ var _psandahl$count_down$Main$view = function (model) {
 									_1: {
 										ctor: '::',
 										_0: _elm_lang$html$Html_Events$onClick(
-											_psandahl$count_down$Types$StartNewGame(_p4._0)),
+											_psandahl$count_down$Types$StartNewGame(_p5)),
 										_1: {ctor: '[]'}
 									}
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('Hek'),
+									_0: _elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'Ready for level ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(
+													_psandahl$count_down$Game_Level$asInt(_p5)),
+												'?'))),
 									_1: {ctor: '[]'}
 								}),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				});
-		case 'Playing':
-			var _p5 = model.game;
-			if (_p5.ctor === 'Just') {
-				return A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('container'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _psandahl$count_down$Game$render(_p5._0),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$div,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('overlay'),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('Burk'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}
-					});
-			} else {
-				return A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('container'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$h1,
-							{
+							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('error'),
+								_0: _psandahl$count_down$Main$splashHUD(model),
 								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('???'),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					});
-			}
-		default:
-			return A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('container'),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: A2(
+							}
+						});
+				} else {
+					return A2(
 						_elm_lang$html$Html$h1,
 						{
 							ctor: '::',
@@ -14421,12 +14408,13 @@ var _psandahl$count_down$Main$view = function (model) {
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text('Foo'),
+							_0: _elm_lang$html$Html$text('Whut?'),
 							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				});
-	}
+						});
+				}
+			}(),
+			_1: {ctor: '[]'}
+		});
 };
 var _psandahl$count_down$Main$advanceGame = F3(
 	function (randoms, game, model) {
@@ -14594,6 +14582,8 @@ var _psandahl$count_down$Main$init = {
 		textures: _elm_lang$core$Array$empty,
 		meshStore: _psandahl$count_down$Game_MeshStore$init,
 		game: _elm_lang$core$Maybe$Nothing,
+		lives: 3,
+		points: 0,
 		timeDiff: 0
 	},
 	_1: _psandahl$count_down$Main$loadTextures

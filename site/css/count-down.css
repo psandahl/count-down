@@ -5,6 +5,7 @@ body {
 
 div.container {
   position: relative;
+  background-color: black;
   width: 1024px;
   height: 768px;
   margin-left: auto;
@@ -42,8 +43,10 @@ div.overlay {
   position: absolute;
   left: 10px;
   top: 10px;
-  background-color: rgb(255, 1, 1);
+  background-color: rgba(105, 105, 105, 0.3);
   color: white;
+  border-color: rgba(0, 0, 255, 0.3);
+  border-style: solid;
   font-family: monospace;
   padding: 1em;
 }

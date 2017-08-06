@@ -37,6 +37,8 @@ init =
       , textures = Array.empty
       , meshStore = MeshStore.init
       , game = Nothing
+      , lives = 3
+      , points = 0
       , timeDiff = 0
       }
       -- Load the textures.
@@ -145,40 +147,69 @@ advanceGame randoms game model =
 
 view : Model -> Html Msg
 view model =
-    case model.state of
-        ReadyForPlay level ->
-            Html.div [ Attr.class "container" ]
-                [ Html.div [ Attr.class "splash" ]
+    Html.div [ Attr.class "container" ]
+        [ case model.state of
+            ReadyForPlay level ->
+                Html.div [ Attr.class "splash" ]
                     [ Html.h1
                         [ Attr.class "splash"
                         , Events.onClick <| StartNewGame level
                         ]
-                        [ Html.text "Hek" ]
+                        [ Html.text <|
+                            "Ready for level "
+                                ++ (toString <| Level.asInt level)
+                                ++ "?"
+                        ]
+                    , splashHUD model
                     ]
-                ]
 
-        Playing level ->
-            case model.game of
-                Just game ->
-                    Html.div [ Attr.class "container" ]
-                        [ Game.render game
-                        , Html.div [ Attr.class "overlay" ]
-                            [ Html.text "Burk"
-                            ]
-                        ]
+            _ ->
+                Html.h1 [ Attr.class "error" ] [ Html.text "Whut?" ]
+        ]
 
-                Nothing ->
-                    Html.div [ Attr.class "container" ]
-                        [ Html.h1 [ Attr.class "error" ] [ Html.text "???" ]
-                        ]
 
-        _ ->
-            Html.div [ Attr.class "container" ]
-                [ Html.h1 [ Attr.class "error" ] [ Html.text "Foo" ]
-                ]
+splashHUD : Model -> Html Msg
+splashHUD model =
+    Html.div [ Attr.class "overlay" ]
+        [ Html.div [] [ Html.text <| "Points: " ++ toString model.points ]
+        , Html.div [] [ Html.text <| "Lives: " ++ toString model.lives ]
+        ]
 
 
 
+{- }
+   case model.state of
+       ReadyForPlay level ->
+           Html.div [ Attr.class "container" ]
+               [ Html.div [ Attr.class "splash" ]
+                   [ Html.h1
+                       [ Attr.class "splash"
+                       , Events.onClick <| StartNewGame level
+                       ]
+                       [ Html.text "Hek" ]
+                   ]
+               ]
+
+       Playing level ->
+           case model.game of
+               Just game ->
+                   Html.div [ Attr.class "container" ]
+                       [ Game.render game
+                       , Html.div [ Attr.class "overlay" ]
+                           [ Html.text "Burk"
+                           ]
+                       ]
+
+               Nothing ->
+                   Html.div [ Attr.class "container" ]
+                       [ Html.h1 [ Attr.class "error" ] [ Html.text "???" ]
+                       ]
+
+       _ ->
+           Html.div [ Attr.class "container" ]
+               [ Html.h1 [ Attr.class "error" ] [ Html.text "Foo" ]
+               ]
+-}
 {- }
    Html.div [ Attr.class "fullscreen" ]
        [ case model.state of
