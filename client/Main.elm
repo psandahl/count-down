@@ -4,6 +4,7 @@ import AnimationFrame
 import Array
 import Game exposing (Game, Verdict(..))
 import Game
+import Game.Level exposing (Level)
 import Game.Level as Level
 import Game.MeshStore as MeshStore
 import Html exposing (Html)
@@ -150,22 +151,32 @@ view model =
     Html.div [ Attr.class "container" ]
         [ case model.state of
             ReadyForPlay level ->
-                Html.div [ Attr.class "splash" ]
-                    [ Html.h1
-                        [ Attr.class "splash"
-                        , Events.onClick <| StartNewGame level
-                        ]
-                        [ Html.text <|
-                            "Ready for level "
-                                ++ (toString <| Level.asInt level)
-                                ++ "?"
-                        ]
-                    , splashHUD model
-                    ]
+                viewSplash level model
 
             _ ->
-                Html.h1 [ Attr.class "error" ] [ Html.text "Whut?" ]
+                viewError "Whut?"
         ]
+
+
+viewSplash : Level -> Model -> Html Msg
+viewSplash level model =
+    Html.div [ Attr.class "splash" ]
+        [ Html.h1
+            [ Attr.class "splash"
+            , Events.onClick <| StartNewGame level
+            ]
+            [ Html.text <|
+                "Ready for level "
+                    ++ (toString <| Level.asInt level)
+                    ++ "?"
+            ]
+        , splashHUD model
+        ]
+
+
+viewError : String -> Html Msg
+viewError msg =
+    Html.h1 [ Attr.class "error" ] [ Html.text msg ]
 
 
 splashHUD : Model -> Html Msg
