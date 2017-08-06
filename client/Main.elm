@@ -142,8 +142,39 @@ advanceGame randoms game model =
     let
         ( newGame, verdict ) =
             Game.timeTick randoms game
+
+        thisLevel =
+            newGame.currentLevel
     in
-        { model | game = Just newGame }
+        case verdict of
+            Continue p ->
+                { model
+                    | game = Just newGame
+                    , points = model.points + p
+                }
+
+            Won p ->
+                { model
+                    | game = Nothing
+                    , points = model.points + p
+                    , state = ReadyForPlay <| Level.next thisLevel
+                }
+
+            Lose p ->
+                if model.lives > 1 then
+                    { model
+                        | game = Nothing
+                        , points = model.points + p
+                        , lives = model.lives - 1
+                        , state = ReadyForPlay thisLevel
+                    }
+                else
+                    { model
+                        | game = Nothing
+                        , points = model.points + p
+                        , lives = 0
+                        , state = GameOver
+                    }
 
 
 view : Model -> Html Msg
@@ -161,8 +192,14 @@ view model =
                     Nothing ->
                         viewError "Error: No game. How strange ..."
 
-            _ ->
-                viewError "Whut?"
+            GameOver ->
+                viewError "Game Over!"
+
+            Error msg ->
+                viewError msg
+
+            Null ->
+                viewError "Loading ..."
         ]
 
 

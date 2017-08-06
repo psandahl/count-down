@@ -14513,8 +14513,12 @@ var _psandahl$count_down$Main$view = function (model) {
 						} else {
 							return _psandahl$count_down$Main$viewError('Error: No game. How strange ...');
 						}
+					case 'GameOver':
+						return _psandahl$count_down$Main$viewError('Game Over!');
+					case 'Error':
+						return _psandahl$count_down$Main$viewError(_p4._0);
 					default:
-						return _psandahl$count_down$Main$viewError('Whut?');
+						return _psandahl$count_down$Main$viewError('Loading ...');
 				}
 			}(),
 			_1: {ctor: '[]'}
@@ -14525,25 +14529,52 @@ var _psandahl$count_down$Main$advanceGame = F3(
 		var _p6 = A2(_psandahl$count_down$Game$timeTick, randoms, game);
 		var newGame = _p6._0;
 		var verdict = _p6._1;
-		return _elm_lang$core$Native_Utils.update(
-			model,
-			{
-				game: _elm_lang$core$Maybe$Just(newGame)
-			});
+		var thisLevel = newGame.currentLevel;
+		var _p7 = verdict;
+		switch (_p7.ctor) {
+			case 'Continue':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						game: _elm_lang$core$Maybe$Just(newGame),
+						points: model.points + _p7._0
+					});
+			case 'Won':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						game: _elm_lang$core$Maybe$Nothing,
+						points: model.points + _p7._0,
+						state: _psandahl$count_down$Types$ReadyForPlay(
+							_psandahl$count_down$Game_Level$next(thisLevel))
+					});
+			default:
+				var _p8 = _p7._0;
+				return (_elm_lang$core$Native_Utils.cmp(model.lives, 1) > 0) ? _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						game: _elm_lang$core$Maybe$Nothing,
+						points: model.points + _p8,
+						lives: model.lives - 1,
+						state: _psandahl$count_down$Types$ReadyForPlay(thisLevel)
+					}) : _elm_lang$core$Native_Utils.update(
+					model,
+					{game: _elm_lang$core$Maybe$Nothing, points: model.points + _p8, lives: 0, state: _psandahl$count_down$Types$GameOver});
+		}
 	});
 var _psandahl$count_down$Main$update = F2(
 	function (msg, model) {
-		var _p7 = msg;
-		switch (_p7.ctor) {
+		var _p9 = msg;
+		switch (_p9.ctor) {
 			case 'TexturesLoaded':
-				var _p8 = _p7._0;
-				if (_p8.ctor === 'Ok') {
+				var _p10 = _p9._0;
+				if (_p10.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								textures: _elm_lang$core$Array$fromList(_p8._0),
+								textures: _elm_lang$core$Array$fromList(_p10._0),
 								state: _psandahl$count_down$Types$ReadyForPlay(_psandahl$count_down$Game_Level$init)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
@@ -14572,18 +14603,18 @@ var _psandahl$count_down$Main$update = F2(
 							A2(_elm_lang$core$Random$int, 0, 3571)))
 				};
 			case 'TimeTick':
-				var _p9 = model.game;
-				if (_p9.ctor === 'Just') {
+				var _p11 = model.game;
+				if (_p11.ctor === 'Just') {
 					return {
 						ctor: '_Tuple2',
-						_0: A3(_psandahl$count_down$Main$advanceGame, _p7._0, _p9._0, model),
+						_0: A3(_psandahl$count_down$Main$advanceGame, _p9._0, _p11._0, model),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'Animate':
-				var _p10 = _p7._0;
+				var _p12 = _p9._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14591,22 +14622,22 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								_psandahl$count_down$Game$animate(_p10),
+								_psandahl$count_down$Game$animate(_p12),
 								model.game),
-							timeDiff: _p10
+							timeDiff: _p12
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'StartNewGame':
-				var _p11 = _p7._0;
+				var _p13 = _p9._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
 							game: _elm_lang$core$Maybe$Just(
-								A3(_psandahl$count_down$Game$new, _p11, model.meshStore, model.textures)),
-							state: _psandahl$count_down$Types$Playing(_p11)
+								A3(_psandahl$count_down$Game$new, _p13, model.meshStore, model.textures)),
+							state: _psandahl$count_down$Types$Playing(_p13)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -14615,11 +14646,11 @@ var _psandahl$count_down$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{trackingMouse: true, mousePosition: _p7._0}),
+						{trackingMouse: true, mousePosition: _p9._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MouseReleased':
-				var _p12 = _p7._0;
+				var _p14 = _p9._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14628,14 +14659,14 @@ var _psandahl$count_down$Main$update = F2(
 							trackingMouse: false,
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p12),
+								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p14),
 								model.game),
-							mousePosition: _p12
+							mousePosition: _p14
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'MouseMoved':
-				var _p13 = _p7._0;
+				var _p15 = _p9._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -14643,9 +14674,9 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p13),
+								A2(_psandahl$count_down$Game$mouseMoved, model.mousePosition, _p15),
 								model.game),
-							mousePosition: _p13
+							mousePosition: _p15
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -14657,7 +14688,7 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								_psandahl$count_down$Game$keyPressed(_p7._0),
+								_psandahl$count_down$Game$keyPressed(_p9._0),
 								model.game)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
@@ -14670,7 +14701,7 @@ var _psandahl$count_down$Main$update = F2(
 						{
 							game: A2(
 								_elm_lang$core$Maybe$map,
-								_psandahl$count_down$Game$keyReleased(_p7._0),
+								_psandahl$count_down$Game$keyReleased(_p9._0),
 								model.game)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
