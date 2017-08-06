@@ -156,7 +156,7 @@ view model =
             Playing level ->
                 case model.game of
                     Just game ->
-                        viewGame game model
+                        viewGame level game model
 
                     Nothing ->
                         viewError "Error: No game. How strange ..."
@@ -182,10 +182,11 @@ viewSplash level model =
         ]
 
 
-viewGame : Game -> Model -> Html Msg
-viewGame game model =
+viewGame : Level -> Game -> Model -> Html Msg
+viewGame level game model =
     Html.div []
         [ Game.render game
+        , gameHUD level game model
         ]
 
 
@@ -202,74 +203,14 @@ splashHUD model =
         ]
 
 
-
-{- }
-   case model.state of
-       ReadyForPlay level ->
-           Html.div [ Attr.class "container" ]
-               [ Html.div [ Attr.class "splash" ]
-                   [ Html.h1
-                       [ Attr.class "splash"
-                       , Events.onClick <| StartNewGame level
-                       ]
-                       [ Html.text "Hek" ]
-                   ]
-               ]
-
-       Playing level ->
-           case model.game of
-               Just game ->
-                   Html.div [ Attr.class "container" ]
-                       [ Game.render game
-                       , Html.div [ Attr.class "overlay" ]
-                           [ Html.text "Burk"
-                           ]
-                       ]
-
-               Nothing ->
-                   Html.div [ Attr.class "container" ]
-                       [ Html.h1 [ Attr.class "error" ] [ Html.text "???" ]
-                       ]
-
-       _ ->
-           Html.div [ Attr.class "container" ]
-               [ Html.h1 [ Attr.class "error" ] [ Html.text "Foo" ]
-               ]
--}
-{- }
-   Html.div [ Attr.class "fullscreen" ]
-       [ case model.state of
-           ReadyForPlay level ->
-               Html.div [ Attr.class "container" ]
-                   [ Html.h1
-                       [ Attr.class "splash"
-                       , Events.onClick <| StartNewGame level
-                       ]
-                       [ Html.text <|
-                           "Start level: "
-                               ++ toString (Level.asInt level)
-                       ]
-                   ]
-
-           Playing level ->
-               case model.game of
-                   Just game ->
-                       Html.div [ Attr.class "game" ]
-                           [ Game.render game
-                           , Html.div [ Attr.class "hud" ] [ Html.p [] [ Html.text "foo" ] ]
-                           ]
-
-                   Nothing ->
-                       Html.h1 [ Attr.class "shout" ]
-                           [ Html.text "Unexpected error!" ]
-
-           Error msg ->
-               Html.h1 [ Attr.class "shout" ] [ Html.text msg ]
-
-           _ ->
-               Html.h1 [ Attr.class "shout" ] [ Html.text "Loading ..." ]
-       ]
--}
+gameHUD : Level -> Game -> Model -> Html Msg
+gameHUD level game model =
+    Html.div [ Attr.class "overlay" ]
+        [ Html.div [] [ Html.text <| "Points: " ++ toString model.points ]
+        , Html.div [] [ Html.text <| "Lives: " ++ toString model.lives ]
+        , Html.div [] [ Html.text <| "Level: " ++ toString (Level.asInt level) ]
+        , Html.div [] [ Html.text <| "Time: " ++ toString game.timeLeft ++ "s" ]
+        ]
 
 
 subscriptions : Model -> Sub Msg

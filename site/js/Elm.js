@@ -14304,6 +14304,81 @@ var _psandahl$count_down$Main$subscriptions = function (model) {
 		return _elm_lang$core$Platform_Sub$none;
 	}
 };
+var _psandahl$count_down$Main$gameHUD = F3(
+	function (level, game, model) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('overlay'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'Points: ',
+								_elm_lang$core$Basics$toString(model.points))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'Lives: ',
+									_elm_lang$core$Basics$toString(model.lives))),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'Level: ',
+										_elm_lang$core$Basics$toString(
+											_psandahl$count_down$Game_Level$asInt(level)))),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'Time: ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(game.timeLeft),
+												's'))),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			});
+	});
 var _psandahl$count_down$Main$splashHUD = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -14358,15 +14433,19 @@ var _psandahl$count_down$Main$viewError = function (msg) {
 			_1: {ctor: '[]'}
 		});
 };
-var _psandahl$count_down$Main$viewGame = F2(
-	function (game, model) {
+var _psandahl$count_down$Main$viewGame = F3(
+	function (level, game, model) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
 				_0: _psandahl$count_down$Game$render(game),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A3(_psandahl$count_down$Main$gameHUD, level, game, model),
+					_1: {ctor: '[]'}
+				}
 			});
 	});
 var _psandahl$count_down$Main$viewSplash = F2(
@@ -14430,7 +14509,7 @@ var _psandahl$count_down$Main$view = function (model) {
 					case 'Playing':
 						var _p5 = model.game;
 						if (_p5.ctor === 'Just') {
-							return A2(_psandahl$count_down$Main$viewGame, _p5._0, model);
+							return A3(_psandahl$count_down$Main$viewGame, _p4._0, _p5._0, model);
 						} else {
 							return _psandahl$count_down$Main$viewError('Error: No game. How strange ...');
 						}
