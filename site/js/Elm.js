@@ -14088,6 +14088,7 @@ var _psandahl$count_down$Game$keyAction = F3(
 				return game;
 		}
 	});
+var _psandahl$count_down$Game$markerBoostValue = 3;
 var _psandahl$count_down$Game$clampMarkerBoost = A2(_elm_lang$core$Basics$clamp, 1, 10);
 var _psandahl$count_down$Game$markerBaseYawSpeed = 90;
 var _psandahl$count_down$Game$markerBaseMoveSpeed = 1;
@@ -14181,7 +14182,7 @@ var _psandahl$count_down$Game$new = F3(
 			board: A3(_psandahl$count_down$Game_Board$init, details.boardWidth, details.gameWidth, meshStore.boardMesh),
 			counters: A3(_psandahl$count_down$Game_Counters$init, level, meshStore, textures),
 			marker: A2(_psandahl$count_down$Game_Marker$init, details.markerStart, meshStore.markerMesh),
-			markerBoost: _psandahl$count_down$Game$clampMarkerBoost(10),
+			markerBoost: _psandahl$count_down$Game$clampMarkerBoost(1),
 			userInput: _psandahl$count_down$Game_UserInput$init,
 			timeLeft: details.duration,
 			currentLevel: level

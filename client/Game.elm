@@ -206,6 +206,11 @@ clampMarkerBoost =
     clamp 1 10
 
 
+markerBoostValue : Float
+markerBoostValue =
+    3
+
+
 keyAction : Bool -> Key -> Game -> Game
 keyAction value key game =
     case key of
