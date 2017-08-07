@@ -45,6 +45,7 @@ type alias Game =
     , board : Board
     , counters : Counters
     , marker : Marker
+    , markerBoost : Float
     , userInput : UserInput
     , timeLeft : Seconds
     , currentLevel : Level
@@ -68,6 +69,7 @@ new level meshStore textures =
         , board = Board.init details.boardWidth details.gameWidth meshStore.boardMesh
         , counters = Counters.init level meshStore textures
         , marker = Marker.init details.markerStart meshStore.markerMesh
+        , markerBoost = clampMarkerBoost 1
         , userInput = UserInput.init
         , timeLeft = details.duration
         , currentLevel = level
@@ -106,7 +108,7 @@ animate : Time -> Game -> Game
 animate time game =
     let
         newPosition =
-            newMarkerPosition time markerMoveSpeed game
+            newMarkerPosition time (markerBaseMoveSpeed * game.markerBoost) game
 
         movedMarker =
             Marker.moveTo newPosition game.marker
@@ -116,7 +118,8 @@ animate time game =
             , counters =
                 Counters.animate time <|
                     Counters.markerMoved newPosition game.counters
-            , marker = Marker.yaw time movedMarker
+            , marker =
+                Marker.yaw (time * (markerBaseYawSpeed * game.markerBoost)) movedMarker
         }
 
 
@@ -141,11 +144,6 @@ keyPressed =
 keyReleased : Key -> Game -> Game
 keyReleased =
     keyAction False
-
-
-markerMoveSpeed : Speed
-markerMoveSpeed =
-    3
 
 
 newMarkerPosition : Time -> Speed -> Game -> ( Float, Float )
@@ -190,6 +188,21 @@ moveRight amount ( x, z ) =
 moveDown : Float -> ( Float, Float ) -> ( Float, Float )
 moveDown amount ( x, z ) =
     ( x, z + amount )
+
+
+markerBaseMoveSpeed : Float
+markerBaseMoveSpeed =
+    1
+
+
+markerBaseYawSpeed : Float
+markerBaseYawSpeed =
+    90
+
+
+clampMarkerBoost : Float -> Float
+clampMarkerBoost =
+    clamp 1 10
 
 
 keyAction : Bool -> Key -> Game -> Game

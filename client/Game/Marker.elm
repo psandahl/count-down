@@ -11,12 +11,10 @@ module Game.Marker
         , makeMesh
         )
 
-import Game.Types exposing (Speed)
 import Math.Matrix4 exposing (Mat4)
 import Math.Matrix4 as Mat
 import Math.Vector3 exposing (Vec3, vec3)
 import Math.Vector3 as Vec
-import Time exposing (Time)
 import WebGL exposing (Mesh, Entity, Shader)
 import WebGL as GL
 import WebGL.Settings as Settings
@@ -59,10 +57,10 @@ init ( x, z ) mesh =
 {-| Yaw the marker proportional to the time. Matrix handling is made at
 next render.
 -}
-yaw : Time -> Marker -> Marker
-yaw time marker =
+yaw : Float -> Marker -> Marker
+yaw angle marker =
     { marker
-        | yawAngle = marker.yawAngle + time * yawSpeed
+        | yawAngle = marker.yawAngle + angle
     }
 
 
@@ -168,11 +166,6 @@ adjustHeight amount vec =
             amount + Vec.getY vec
     in
         Vec.setY y vec
-
-
-yawSpeed : Speed
-yawSpeed =
-    90
 
 
 lightFromAbove : Vec3
