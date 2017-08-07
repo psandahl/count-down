@@ -13210,7 +13210,7 @@ var _psandahl$count_down$Game_Camera$makeMatrix = function (settings) {
 		scaledVector);
 	return A3(_elm_community$linear_algebra$Math_Matrix4$makeLookAt, eye, _psandahl$count_down$Game_Camera$origo, _psandahl$count_down$Game_Camera$up);
 };
-var _psandahl$count_down$Game_Camera$clampMagnitude = A2(_elm_lang$core$Basics$clamp, 5, 50);
+var _psandahl$count_down$Game_Camera$clampMagnitude = A2(_elm_lang$core$Basics$clamp, 5, 60);
 var _psandahl$count_down$Game_Camera$clampPitch = A2(_elm_lang$core$Basics$clamp, 10, 80);
 var _psandahl$count_down$Game_Camera$zoomSpeed = 5;
 var _psandahl$count_down$Game_Camera$rotationSpeed = 1000;
@@ -13465,17 +13465,96 @@ var _psandahl$count_down$Game_Counter$advanceState = function (counter) {
 	}
 };
 
+var _psandahl$count_down$Game_Level$boardStuff = function (index) {
+	var stuff = _elm_lang$core$Array$fromList(
+		{
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple3',
+				_0: _psandahl$count_down$Game_Types$BoardWidth(6),
+				_1: _psandahl$count_down$Game_Types$GameWidth(5),
+				_2: 10
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple3',
+					_0: _psandahl$count_down$Game_Types$BoardWidth(11),
+					_1: _psandahl$count_down$Game_Types$GameWidth(10),
+					_2: 20
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple3',
+						_0: _psandahl$count_down$Game_Types$BoardWidth(16),
+						_1: _psandahl$count_down$Game_Types$GameWidth(15),
+						_2: 30
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple3',
+							_0: _psandahl$count_down$Game_Types$BoardWidth(21),
+							_1: _psandahl$count_down$Game_Types$GameWidth(20),
+							_2: 40
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple3',
+								_0: _psandahl$count_down$Game_Types$BoardWidth(26),
+								_1: _psandahl$count_down$Game_Types$GameWidth(25),
+								_2: 50
+							},
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		});
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		{
+			ctor: '_Tuple3',
+			_0: _psandahl$count_down$Game_Types$BoardWidth(26),
+			_1: _psandahl$count_down$Game_Types$GameWidth(25),
+			_2: 50
+		},
+		A2(_elm_lang$core$Array$get, index, stuff));
+};
 var _psandahl$count_down$Game_Level$asInt = function (_p0) {
 	var _p1 = _p0;
 	return _p1._0;
 };
-var _psandahl$count_down$Game_Level$details = function (level) {
+var _psandahl$count_down$Game_Level$levelStuff = function (level) {
+	var levelAsInt = _psandahl$count_down$Game_Level$asInt(level);
+	var boardIndex = ((levelAsInt - 1) / 3) | 0;
+	var _p2 = _psandahl$count_down$Game_Level$boardStuff(boardIndex);
+	var bw = _p2._0;
+	var gw = _p2._1;
+	var cd = _p2._2;
 	return {
-		boardWidth: _psandahl$count_down$Game_Types$BoardWidth(6),
-		gameWidth: _psandahl$count_down$Game_Types$GameWidth(5),
+		ctor: '_Tuple4',
+		_0: bw,
+		_1: gw,
+		_2: cd,
+		_3: _psandahl$count_down$Game_Types$OneTo(
+			3 - A2(_elm_lang$core$Basics_ops['%'], levelAsInt - 1, 3))
+	};
+};
+var _psandahl$count_down$Game_Level$details = function (level) {
+	var _p3 = _psandahl$count_down$Game_Level$levelStuff(level);
+	var bw = _p3._0;
+	var gw = _p3._1;
+	var cd = _p3._2;
+	var prob = _p3._3;
+	return {
+		boardWidth: bw,
+		gameWidth: gw,
 		markerStart: {ctor: '_Tuple2', _0: 0, _1: 0},
-		cameraDistance: 10,
-		probability: _psandahl$count_down$Game_Types$OneTo(5),
+		cameraDistance: cd,
+		probability: prob,
 		duration: 30
 	};
 };
@@ -13487,9 +13566,9 @@ var _psandahl$count_down$Game_Level$Level = function (a) {
 	return {ctor: 'Level', _0: a};
 };
 var _psandahl$count_down$Game_Level$init = _psandahl$count_down$Game_Level$Level(1);
-var _psandahl$count_down$Game_Level$next = function (_p2) {
-	var _p3 = _p2;
-	return _psandahl$count_down$Game_Level$Level(_p3._0 + 1);
+var _psandahl$count_down$Game_Level$next = function (_p4) {
+	var _p5 = _p4;
+	return _psandahl$count_down$Game_Level$Level(_p5._0 + 1);
 };
 
 var _psandahl$count_down$Game_Marker$fragmentShader = {'src': '\n        precision mediump float;\n\n        uniform mat4 vMatrix;\n        uniform vec3 lightDirection;\n        uniform float colorDamper;\n\n        varying vec3 vPosition;\n        varying vec3 vNormal;\n\n        vec3 markerColor = vec3(152.0 / 255.0, 1.0, 152.0 / 255.0);\n        vec3 lightColor = vec3(1.0, 1.0, 1.0);\n        float ambientStrength = 0.9;\n        float specularShine = 64.0;\n        float specularStrength = 1.2;\n\n        vec3 transformedLightDirection();\n        vec3 ambientColor();\n        vec3 diffuseColor();\n        vec3 specularColor();\n\n        void main()\n        {\n            vec3 color = markerColor * (ambientColor() + diffuseColor() + specularColor());\n            gl_FragColor = vec4(colorDamper * color, 1.0);\n        }\n\n        vec3 transformedLightDirection()\n        {\n            return (vMatrix * vec4(lightDirection, 0.0)).xyz;\n        }\n\n        vec3 ambientColor()\n        {\n            return lightColor * ambientStrength;\n        }\n\n        vec3 diffuseColor()\n        {\n            vec3 normal = normalize(vNormal);\n            float diffuse = min(dot(normal, transformedLightDirection()), 0.0);\n\n            return lightColor * diffuse;\n        }\n\n        vec3 specularColor()\n        {\n            vec3 normal = normalize(vNormal);\n            vec3 reflectDir = reflect(transformedLightDirection(), normal);\n            vec3 viewDir = normalize(vec3(0.0) - vPosition); // Eye at 0, 0, 0.\n            float specular = pow(min(dot(viewDir, reflectDir), 0.0), specularShine);\n\n            return lightColor * specular * specularStrength;\n        }\n    '};

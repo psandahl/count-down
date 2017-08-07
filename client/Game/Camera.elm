@@ -140,7 +140,7 @@ clampPitch =
 -}
 clampMagnitude : Float -> Float
 clampMagnitude =
-    clamp 5 50
+    clamp 5 60
 
 
 makeMatrix : Settings -> Mat4
