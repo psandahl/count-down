@@ -6,6 +6,7 @@ module Game.Counter
         , init
         , advanceState
         , stop
+        , isStopped
         , fade
         , render
         , makeMesh
@@ -127,6 +128,18 @@ stop counter =
 
         _ ->
             counter
+
+
+{-| Tell if the counter is stopped.
+-}
+isStopped : Counter -> Bool
+isStopped counter =
+    case counter.state of
+        Stopped count ->
+            True
+
+        _ ->
+            False
 
 
 {-| Animation event. Fade the counter with the given time.

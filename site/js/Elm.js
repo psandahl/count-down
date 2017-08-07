@@ -13361,6 +13361,14 @@ var _psandahl$count_down$Game_Counter$fade = F2(
 			return counter;
 		}
 	});
+var _psandahl$count_down$Game_Counter$isStopped = function (counter) {
+	var _p2 = counter.state;
+	if (_p2.ctor === 'Stopped') {
+		return true;
+	} else {
+		return false;
+	}
+};
 var _psandahl$count_down$Game_Counter$Vertex = F2(
 	function (a, b) {
 		return {position: a, texCoord: b};
@@ -13374,8 +13382,8 @@ var _psandahl$count_down$Game_Counter$Stopped = function (a) {
 	return {ctor: 'Stopped', _0: a};
 };
 var _psandahl$count_down$Game_Counter$stop = function (counter) {
-	var _p2 = counter.state;
-	if (_p2.ctor === 'Counting') {
+	var _p3 = counter.state;
+	if (_p3.ctor === 'Counting') {
 		return _elm_lang$core$Native_Utils.update(
 			counter,
 			{
@@ -13395,11 +13403,11 @@ var _psandahl$count_down$Game_Counter$Counting = function (a) {
 	return {ctor: 'Counting', _0: a};
 };
 var _psandahl$count_down$Game_Counter$init = F3(
-	function (_p3, textures, mesh) {
-		var _p4 = _p3;
+	function (_p4, textures, mesh) {
+		var _p5 = _p4;
 		return {
 			mesh: mesh,
-			modelMatrix: A3(_elm_community$linear_algebra$Math_Matrix4$makeTranslate3, _p4._0, 0, _p4._1),
+			modelMatrix: A3(_elm_community$linear_algebra$Math_Matrix4$makeTranslate3, _p5._0, 0, _p5._1),
 			textures: textures,
 			currentTexture: 10,
 			bgColor: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 0),
@@ -13409,10 +13417,10 @@ var _psandahl$count_down$Game_Counter$init = F3(
 		};
 	});
 var _psandahl$count_down$Game_Counter$advanceState = function (counter) {
-	var _p5 = counter.state;
-	switch (_p5.ctor) {
+	var _p6 = counter.state;
+	switch (_p6.ctor) {
 		case 'Counting':
-			if (_p5._0 === 1) {
+			if (_p6._0 === 1) {
 				return _elm_lang$core$Native_Utils.update(
 					counter,
 					{
@@ -13422,22 +13430,22 @@ var _psandahl$count_down$Game_Counter$advanceState = function (counter) {
 						state: _psandahl$count_down$Game_Counter$Expired(1)
 					});
 			} else {
-				var _p6 = _p5._0;
+				var _p7 = _p6._0;
 				return _elm_lang$core$Native_Utils.update(
 					counter,
 					{
-						currentTexture: _p6 - 1,
+						currentTexture: _p7 - 1,
 						fgColor: A3(
 							_psandahl$count_down$Game_Counter$mix,
 							_psandahl$count_down$Game_Counter$red,
 							_psandahl$count_down$Game_Counter$green,
-							_elm_lang$core$Basics$toFloat(_p6) / 10),
+							_elm_lang$core$Basics$toFloat(_p7) / 10),
 						colorFade: 1,
-						state: _psandahl$count_down$Game_Counter$Counting(_p6 - 1)
+						state: _psandahl$count_down$Game_Counter$Counting(_p7 - 1)
 					});
 			}
 		case 'Expired':
-			if (_p5._0 === 0) {
+			if (_p6._0 === 0) {
 				return _elm_lang$core$Native_Utils.update(
 					counter,
 					{state: _psandahl$count_down$Game_Counter$Finished});
@@ -13445,11 +13453,11 @@ var _psandahl$count_down$Game_Counter$advanceState = function (counter) {
 				return _elm_lang$core$Native_Utils.update(
 					counter,
 					{
-						state: _psandahl$count_down$Game_Counter$Expired(_p5._0 - 1)
+						state: _psandahl$count_down$Game_Counter$Expired(_p6._0 - 1)
 					});
 			}
 		case 'Stopped':
-			if (_p5._0 === 0) {
+			if (_p6._0 === 0) {
 				return _elm_lang$core$Native_Utils.update(
 					counter,
 					{state: _psandahl$count_down$Game_Counter$Finished});
@@ -13457,7 +13465,7 @@ var _psandahl$count_down$Game_Counter$advanceState = function (counter) {
 				return _elm_lang$core$Native_Utils.update(
 					counter,
 					{
-						state: _psandahl$count_down$Game_Counter$Stopped(_p5._0 - 1)
+						state: _psandahl$count_down$Game_Counter$Stopped(_p6._0 - 1)
 					});
 			}
 		default:
@@ -13947,23 +13955,35 @@ var _psandahl$count_down$Game_Counters$animate = F2(
 var _psandahl$count_down$Game_Counters$markerMoved = F2(
 	function (coord, counters) {
 		var index = A2(_psandahl$count_down$Game_Counters$coordIndex, counters.details.gameWidth, coord);
-		return _elm_lang$core$Native_Utils.update(
-			counters,
-			{
-				counterMap: A3(
-					_elm_lang$core$Dict$update,
-					index,
-					_elm_lang$core$Maybe$map(_psandahl$count_down$Game_Counter$stop),
-					counters.counterMap)
-			});
+		var wasStopped = function () {
+			var _p20 = A2(_elm_lang$core$Dict$get, index, counters.counterMap);
+			if (_p20.ctor === 'Just') {
+				return !_psandahl$count_down$Game_Counter$isStopped(_p20._0);
+			} else {
+				return false;
+			}
+		}();
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				counters,
+				{
+					counterMap: A3(
+						_elm_lang$core$Dict$update,
+						index,
+						_elm_lang$core$Maybe$map(_psandahl$count_down$Game_Counter$stop),
+						counters.counterMap)
+				}),
+			_1: wasStopped
+		};
 	});
 var _psandahl$count_down$Game_Counters$tickTime = F2(
 	function (randoms, counters) {
 		var advancedCounters = _psandahl$count_down$Game_Counters$advanceCounters(counters.counterMap);
-		var _p20 = _psandahl$count_down$Game_Counters$inspectCounters(advancedCounters);
-		var expired = _p20._0;
-		var stopped = _p20._1;
-		var finished = _p20._2;
+		var _p21 = _psandahl$count_down$Game_Counters$inspectCounters(advancedCounters);
+		var expired = _p21._0;
+		var stopped = _p21._1;
+		var finished = _p21._2;
 		var removedCounters = A2(_psandahl$count_down$Game_Counters$removeCounters, advancedCounters, finished);
 		return {
 			ctor: '_Tuple2',
@@ -14088,8 +14108,8 @@ var _psandahl$count_down$Game$keyAction = F3(
 				return game;
 		}
 	});
-var _psandahl$count_down$Game$markerBoostValue = 3;
-var _psandahl$count_down$Game$clampMarkerBoost = A2(_elm_lang$core$Basics$clamp, 1, 10);
+var _psandahl$count_down$Game$markerBoostValue = 1;
+var _psandahl$count_down$Game$clampMarkerBoost = A2(_elm_lang$core$Basics$clamp, 1.5, 6);
 var _psandahl$count_down$Game$markerBaseYawSpeed = 90;
 var _psandahl$count_down$Game$markerBaseMoveSpeed = 1;
 var _psandahl$count_down$Game$moveDown = F2(
@@ -14161,16 +14181,17 @@ var _psandahl$count_down$Game$animate = F2(
 	function (time, game) {
 		var newPosition = A3(_psandahl$count_down$Game$newMarkerPosition, time, _psandahl$count_down$Game$markerBaseMoveSpeed * game.markerBoost, game);
 		var movedMarker = A2(_psandahl$count_down$Game_Marker$moveTo, newPosition, game.marker);
+		var _p9 = A2(_psandahl$count_down$Game_Counters$markerMoved, newPosition, game.counters);
+		var markedCounters = _p9._0;
+		var someStopped = _p9._1;
+		var boost = (game.markerBoost - time) + (someStopped ? _psandahl$count_down$Game$markerBoostValue : 0);
 		return _elm_lang$core$Native_Utils.update(
 			game,
 			{
 				camera: A3(_psandahl$count_down$Game_Camera$animate, time, game.userInput, game.camera),
-				counters: A2(
-					_psandahl$count_down$Game_Counters$animate,
-					time,
-					A2(_psandahl$count_down$Game_Counters$markerMoved, newPosition, game.counters)),
+				counters: A2(_psandahl$count_down$Game_Counters$animate, time, markedCounters),
 				marker: A2(_psandahl$count_down$Game_Marker$yaw, time * (_psandahl$count_down$Game$markerBaseYawSpeed * game.markerBoost), movedMarker),
-				markerBoost: _psandahl$count_down$Game$clampMarkerBoost(game.markerBoost - time)
+				markerBoost: _psandahl$count_down$Game$clampMarkerBoost(boost)
 			});
 	});
 var _psandahl$count_down$Game$new = F3(
@@ -14182,7 +14203,7 @@ var _psandahl$count_down$Game$new = F3(
 			board: A3(_psandahl$count_down$Game_Board$init, details.boardWidth, details.gameWidth, meshStore.boardMesh),
 			counters: A3(_psandahl$count_down$Game_Counters$init, level, meshStore, textures),
 			marker: A2(_psandahl$count_down$Game_Marker$init, details.markerStart, meshStore.markerMesh),
-			markerBoost: _psandahl$count_down$Game$clampMarkerBoost(1),
+			markerBoost: _psandahl$count_down$Game$clampMarkerBoost(1.5),
 			userInput: _psandahl$count_down$Game_UserInput$init,
 			timeLeft: details.duration,
 			currentLevel: level
@@ -14204,10 +14225,10 @@ var _psandahl$count_down$Game$Continue = function (a) {
 var _psandahl$count_down$Game$timeTick = F2(
 	function (randoms, game) {
 		var newTimeLeft = game.timeLeft - 1;
-		var _p9 = A2(_psandahl$count_down$Game_Counters$tickTime, randoms, game.counters);
-		var newCounters = _p9._0;
-		var expired = _p9._1._0;
-		var stopped = _p9._1._1;
+		var _p10 = A2(_psandahl$count_down$Game_Counters$tickTime, randoms, game.counters);
+		var newCounters = _p10._0;
+		var expired = _p10._1._0;
+		var stopped = _p10._1._1;
 		var newGame = _elm_lang$core$Native_Utils.update(
 			game,
 			{counters: newCounters, timeLeft: newTimeLeft});

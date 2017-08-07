@@ -69,7 +69,7 @@ new level meshStore textures =
         , board = Board.init details.boardWidth details.gameWidth meshStore.boardMesh
         , counters = Counters.init level meshStore textures
         , marker = Marker.init details.markerStart meshStore.markerMesh
-        , markerBoost = clampMarkerBoost 1
+        , markerBoost = clampMarkerBoost 1.5
         , userInput = UserInput.init
         , timeLeft = details.duration
         , currentLevel = level
@@ -102,7 +102,7 @@ timeTick randoms game =
 
 
 {-| Take care of the animate event. Animate subcomponents and evolve game
-logic. Decrease the marker boost.
+logic. Adjust the marker boost.
 -}
 animate : Time -> Game -> Game
 animate time game =
@@ -112,15 +112,24 @@ animate time game =
 
         movedMarker =
             Marker.moveTo newPosition game.marker
+
+        ( markedCounters, someStopped ) =
+            Counters.markerMoved newPosition game.counters
+
+        boost =
+            game.markerBoost
+                - time
+                + if someStopped then
+                    markerBoostValue
+                  else
+                    0
     in
         { game
             | camera = Camera.animate time game.userInput game.camera
-            , counters =
-                Counters.animate time <|
-                    Counters.markerMoved newPosition game.counters
+            , counters = Counters.animate time markedCounters
             , marker =
                 Marker.yaw (time * (markerBaseYawSpeed * game.markerBoost)) movedMarker
-            , markerBoost = clampMarkerBoost <| game.markerBoost - time
+            , markerBoost = clampMarkerBoost boost
         }
 
 
@@ -203,12 +212,12 @@ markerBaseYawSpeed =
 
 clampMarkerBoost : Float -> Float
 clampMarkerBoost =
-    clamp 1 10
+    clamp 1.5 6
 
 
 markerBoostValue : Float
 markerBoostValue =
-    3
+    1
 
 
 keyAction : Bool -> Key -> Game -> Game

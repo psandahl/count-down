@@ -70,17 +70,31 @@ tickTime randoms counters =
 
 
 {-| The marker has been moved to the given position. If it's hitting a counting
-Counter, the Counter is stopped.
+Counter, the Counter is stopped. In the return give back the updated counters
+and a boolean value telling if a Counter was stopped or not due to this move.
 -}
-markerMoved : ( Float, Float ) -> Counters -> Counters
+markerMoved : ( Float, Float ) -> Counters -> ( Counters, Bool )
 markerMoved coord counters =
     let
         index =
             coordIndex counters.details.gameWidth coord
+
+        -- Ok, this is a little tricky. It is only during tickTime that stopped
+        -- counters get purged, so it's not enough to just look if the counter
+        -- is there. We must make sure that it's not already stopped.
+        wasStopped =
+            case Dict.get index counters.counterMap of
+                Just counter ->
+                    not <| Counter.isStopped counter
+
+                Nothing ->
+                    False
     in
-        { counters
+        ( { counters
             | counterMap = Dict.update index (Maybe.map Counter.stop) counters.counterMap
-        }
+          }
+        , wasStopped
+        )
 
 
 {-| Animate the Counters. Each Counter is faded.
