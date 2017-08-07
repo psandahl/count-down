@@ -25,6 +25,9 @@ type alias Details =
     -- Where to start with the marker (x, z).
     , markerStart : ( Float, Float )
 
+    -- The camera's distance to the board.
+    , cameraDistance : Float
+
     -- The probability of adding a new counter at each tick.
     , probability : Probability
 
@@ -45,10 +48,11 @@ next (Level n) =
 
 details : Level -> Details
 details level =
-    { boardWidth = BoardWidth 9
-    , gameWidth = GameWidth 8
+    { boardWidth = BoardWidth 6
+    , gameWidth = GameWidth 5
     , markerStart = ( 0, 0 )
-    , probability = OneTo 8
+    , cameraDistance = 10
+    , probability = OneTo 5
     , duration = 30
     }
 

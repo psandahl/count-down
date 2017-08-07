@@ -64,7 +64,7 @@ new level meshStore textures =
             Level.details level
     in
         { pMatrix = Mat.makePerspective 45 aspectRatio 0.1 100
-        , camera = Camera.init
+        , camera = Camera.init details.cameraDistance
         , board = Board.init details.boardWidth details.gameWidth meshStore.boardMesh
         , counters = Counters.init level meshStore textures
         , marker = Marker.init details.markerStart meshStore.markerMesh

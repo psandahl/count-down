@@ -36,12 +36,12 @@ type alias Settings =
 
 {-| Initialize the camera.
 -}
-init : Camera
-init =
+init : Float -> Camera
+init magnitude =
     let
         settings =
             { baseVector = up
-            , magnitude = clampMagnitude 20
+            , magnitude = clampMagnitude magnitude
             , yaw = 0
             , pitch = clampPitch 45
             }
