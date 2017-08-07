@@ -102,7 +102,7 @@ timeTick randoms game =
 
 
 {-| Take care of the animate event. Animate subcomponents and evolve game
-logic.
+logic. Decrease the marker boost.
 -}
 animate : Time -> Game -> Game
 animate time game =
@@ -120,6 +120,7 @@ animate time game =
                     Counters.markerMoved newPosition game.counters
             , marker =
                 Marker.yaw (time * (markerBaseYawSpeed * game.markerBoost)) movedMarker
+            , markerBoost = clampMarkerBoost <| game.markerBoost - time
         }
 
 
