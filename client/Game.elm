@@ -202,7 +202,7 @@ moveDown amount ( x, z ) =
 
 markerBaseMoveSpeed : Float
 markerBaseMoveSpeed =
-    1
+    2
 
 
 markerBaseYawSpeed : Float
@@ -212,7 +212,7 @@ markerBaseYawSpeed =
 
 clampMarkerBoost : Float -> Float
 clampMarkerBoost =
-    clamp 1.5 6
+    clamp 1 7
 
 
 markerBoostValue : Float
