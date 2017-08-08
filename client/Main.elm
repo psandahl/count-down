@@ -7,6 +7,7 @@ import Game
 import Game.Level exposing (Level)
 import Game.Level as Level
 import Game.MeshStore as MeshStore
+import GameLog exposing (LogMessage(..))
 import GameLog
 import Html exposing (Html)
 import Html.Attributes as Attr
@@ -58,6 +59,8 @@ update msg model =
                     ( { model
                         | textures = Array.fromList ts
                         , state = ReadyForPlay Level.init
+                        , gameLog =
+                            GameLog.add (InfoMessage "Welcome to 3 - 2 - 1!") model.gameLog
                       }
                     , Cmd.none
                     )
@@ -140,10 +143,10 @@ update msg model =
 
 
 advanceGame : ( Int, Int ) -> Game -> Model -> Model
-advanceGame randoms game model =
+advanceGame ( a, b ) game model =
     let
         ( newGame, verdict ) =
-            Game.timeTick randoms game
+            Game.timeTick ( a, b ) game
 
         thisLevel =
             newGame.currentLevel
@@ -153,6 +156,11 @@ advanceGame randoms game model =
                 { model
                     | game = Just newGame
                     , points = model.points + p
+                    , gameLog =
+                        if p > 0 then
+                            GameLog.add (GameLog.gratz b) model.gameLog
+                        else
+                            model.gameLog
                 }
 
             Won p ->
@@ -160,6 +168,7 @@ advanceGame randoms game model =
                     | game = Nothing
                     , points = model.points + p
                     , state = ReadyForPlay <| Level.next thisLevel
+                    , gameLog = GameLog.add (GameLog.win b) model.gameLog
                 }
 
             Lose p ->
@@ -169,6 +178,7 @@ advanceGame randoms game model =
                         , points = model.points + p
                         , lives = model.lives - 1
                         , state = ReadyForPlay thisLevel
+                        , gameLog = GameLog.add (GameLog.lose b) model.gameLog
                     }
                 else
                     { model
@@ -176,6 +186,7 @@ advanceGame randoms game model =
                         , points = model.points + p
                         , lives = 0
                         , state = GameOver
+                        , gameLog = GameLog.add (SadMessage "Game Over :-(") model.gameLog
                     }
 
 
