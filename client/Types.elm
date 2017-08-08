@@ -8,6 +8,7 @@ import Game exposing (Game)
 import Game.Level exposing (Level)
 import Game.MeshStore exposing (MeshStore)
 import Keys exposing (Key)
+import GameLog exposing (GameLog)
 import Mouse exposing (Position)
 import Time exposing (Time)
 import WebGL.Texture exposing (Error, Texture)
@@ -56,6 +57,9 @@ type alias Model =
     -- The accumulated number of points.
     , points : Int
 
+    -- Game log.
+    , gameLog : GameLog
+
     -- Store the timediff for the last frame. For debug etc.
     , timeDiff : Float
     }
@@ -86,7 +90,3 @@ type
     | KeyPressed Key
       -- A key on the keyboard is released.
     | KeyReleased Key
-
-
-
--- ^ Time difference since last frame.

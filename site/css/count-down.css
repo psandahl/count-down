@@ -67,9 +67,24 @@ p.error {
 /*
   Overlay div used for HUD.
 */
-div.overlay {
+div.leftoverlay {
   position: absolute;
   left: 10px;
+  top: 10px;
+  background-color: rgba(105, 105, 105, 0.3);
+  color: white;
+  border-color: rgba(0, 0, 255, 0.3);
+  border-style: solid;
+  font-family: monospace;
+  padding: 1em;
+}
+
+/*
+  Overlay div used for the game log.
+*/
+div.gamelog {
+  position: absolute;
+  left: 800px;
   top: 10px;
   background-color: rgba(105, 105, 105, 0.3);
   color: white;

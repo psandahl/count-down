@@ -7,6 +7,7 @@ import Game
 import Game.Level exposing (Level)
 import Game.Level as Level
 import Game.MeshStore as MeshStore
+import GameLog
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Html.Events as Events
@@ -40,6 +41,7 @@ init =
       , game = Nothing
       , lives = 3
       , points = 0
+      , gameLog = GameLog.init
       , timeDiff = 0
       }
       -- Load the textures.
@@ -215,7 +217,8 @@ viewSplash level model =
                     ++ (toString <| Level.asInt level)
                     ++ "?"
             ]
-        , splashHUD model
+        , viewSplashHUD model
+        , GameLog.view model.gameLog
         ]
 
 
@@ -223,7 +226,8 @@ viewGame : Level -> Game -> Model -> Html Msg
 viewGame level game model =
     Html.div []
         [ Game.render game
-        , gameHUD level game model
+        , viewGameHUD level game model
+        , GameLog.view model.gameLog
         ]
 
 
@@ -232,17 +236,17 @@ viewError msg =
     Html.p [ Attr.class "error" ] [ Html.text msg ]
 
 
-splashHUD : Model -> Html Msg
-splashHUD model =
-    Html.div [ Attr.class "overlay" ]
+viewSplashHUD : Model -> Html Msg
+viewSplashHUD model =
+    Html.div [ Attr.class "leftoverlay" ]
         [ Html.div [] [ Html.text <| "Points: " ++ toString model.points ]
         , Html.div [] [ Html.text <| "Lives: " ++ toString model.lives ]
         ]
 
 
-gameHUD : Level -> Game -> Model -> Html Msg
-gameHUD level game model =
-    Html.div [ Attr.class "overlay" ]
+viewGameHUD : Level -> Game -> Model -> Html Msg
+viewGameHUD level game model =
+    Html.div [ Attr.class "leftoverlay" ]
         [ Html.div [] [ Html.text <| "Points: " ++ toString model.points ]
         , Html.div [] [ Html.text <| "Lives: " ++ toString model.lives ]
         , Html.div [] [ Html.text <| "Level: " ++ toString (Level.asInt level) ]
