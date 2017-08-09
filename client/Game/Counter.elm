@@ -242,6 +242,8 @@ vertexShader =
     |]
 
 
+{-| The fragment shader. Smooth the counter bitmaps.
+-}
 fragmentShader :
     Shader {}
         { uniforms
@@ -262,16 +264,38 @@ fragmentShader =
 
         varying vec2 vTexCoord;
 
+        vec3 sampleColor(vec2 coord);
+        vec3 singleColor(vec2 coord);
+
         void main()
         {
-            float alpha = texture2D(texture, vTexCoord).a;
-            if (alpha > 0.5)
+            gl_FragColor = vec4(mix(bgColor, sampleColor(vTexCoord), colorFade), 1.0);
+        }
+
+        vec3 sampleColor(vec2 coord)
+        {
+            vec3 color = vec3(0.0);
+            for (int row = 1; row > -2; --row)
             {
-                gl_FragColor = vec4(mix(bgColor, fgColor, colorFade), 1.0);
+                for (int col = -1; col < 2; ++col)
+                {
+                    vec2 c = vec2(coord.s + float(col) * 0.02, coord.t + float(row) * 0.02);
+                    color += singleColor(c);
+                }
+            }
+
+            return color / 9.0;
+        }
+
+        vec3 singleColor(vec2 coord)
+        {
+            if (texture2D(texture, coord).a > 0.5)
+            {
+                return fgColor;
             }
             else
             {
-                discard;
+                return bgColor;
             }
         }
     |]
