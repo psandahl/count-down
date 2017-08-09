@@ -10,32 +10,43 @@ module GameLog
         , lose
         )
 
+import Array exposing (Array)
 import Array
 import Html exposing (Html)
 import Html
 import Html.Attributes as Attr
 
 
+{-| GameLog type. Opaque to the user.
+-}
 type GameLog
     = GameLog (List ( String, String ))
 
 
+{-| LogMessage type.
+-}
 type LogMessage
     = InfoMessage String
     | Greeting String
     | SadMessage String
 
 
+{-| Initialize an empty GameLog.
+-}
 init : GameLog
 init =
     GameLog []
 
 
+{-| Add a new message to the log. Maintain the max length of the GameLog.
+-}
 add : LogMessage -> GameLog -> GameLog
 add logMessage (GameLog xs) =
     GameLog <| List.take 10 (entry logMessage :: xs)
 
 
+{-| View the GameLog.
+-}
 view : GameLog -> Html msg
 view (GameLog xs) =
     Html.div
@@ -46,55 +57,51 @@ view (GameLog xs) =
         )
 
 
+{-| Generate a gratz message using the random seed.
+-}
 gratz : Int -> LogMessage
-gratz rand =
-    let
-        xs =
-            Array.fromList [ "Nice!", "Great!", "Wow!", "Gratz!", "Yay!", ":-)" ]
-
-        index =
-            rand % Array.length xs
-    in
-        case Array.get index xs of
-            Just msg ->
-                Greeting msg
-
-            Nothing ->
-                Greeting "You should never see this!"
+gratz =
+    genMessage
+        (Array.fromList
+            [ "Nice!", "Great!", "Wow!", "Gratz!", "Yay!", ":-)" ]
+        )
+        Greeting
 
 
+{-| Generate a win message using the random seed.
+-}
 win : Int -> LogMessage
-win rand =
-    let
-        xs =
-            Array.fromList [ "Hey, you won!", "The winner takes it all!" ]
-
-        index =
-            rand % Array.length xs
-    in
-        case Array.get index xs of
-            Just msg ->
-                Greeting msg
-
-            Nothing ->
-                Greeting "You should never see this!"
+win =
+    genMessage
+        (Array.fromList
+            [ "Hey, you won!", "The winner takes it all!" ]
+        )
+        Greeting
 
 
+{-| Generate a lose message using the random seed.
+-}
 lose : Int -> LogMessage
-lose rand =
-    let
-        xs =
-            Array.fromList [ "Noes!", "F*ck!", "What are you doing?", ":-(" ]
+lose =
+    genMessage
+        (Array.fromList
+            [ "Noes!", "F*ck!", "What are you doing?", ":-(" ]
+        )
+        SadMessage
 
+
+genMessage : Array String -> (String -> LogMessage) -> Int -> LogMessage
+genMessage strings ctor rand =
+    let
         index =
-            rand % Array.length xs
+            rand % Array.length strings
     in
-        case Array.get index xs of
+        case Array.get index strings of
             Just msg ->
-                SadMessage msg
+                ctor msg
 
             Nothing ->
-                SadMessage "You should never see this!"
+                ctor "--- INTERNAL ERROR - GAMELOG ---"
 
 
 viewMessage : ( String, String ) -> Html msg

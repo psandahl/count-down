@@ -14286,8 +14286,21 @@ var _psandahl$count_down$GameLog$viewMessage = function (_p1) {
 			_1: {ctor: '[]'}
 		});
 };
-var _psandahl$count_down$GameLog$view = function (_p3) {
-	var _p4 = _p3;
+var _psandahl$count_down$GameLog$genMessage = F3(
+	function (strings, ctor, rand) {
+		var index = A2(
+			_elm_lang$core$Basics_ops['%'],
+			rand,
+			_elm_lang$core$Array$length(strings));
+		var _p3 = A2(_elm_lang$core$Array$get, index, strings);
+		if (_p3.ctor === 'Just') {
+			return ctor(_p3._0);
+		} else {
+			return ctor('--- INTERNAL ERROR - GAMELOG ---');
+		}
+	});
+var _psandahl$count_down$GameLog$view = function (_p4) {
+	var _p5 = _p4;
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -14298,7 +14311,7 @@ var _psandahl$count_down$GameLog$view = function (_p3) {
 		A2(
 			_elm_lang$core$List$map,
 			_psandahl$count_down$GameLog$viewMessage,
-			_elm_lang$core$List$reverse(_p4._0)));
+			_elm_lang$core$List$reverse(_p5._0)));
 };
 var _psandahl$count_down$GameLog$GameLog = function (a) {
 	return {ctor: 'GameLog', _0: a};
@@ -14306,8 +14319,8 @@ var _psandahl$count_down$GameLog$GameLog = function (a) {
 var _psandahl$count_down$GameLog$init = _psandahl$count_down$GameLog$GameLog(
 	{ctor: '[]'});
 var _psandahl$count_down$GameLog$add = F2(
-	function (logMessage, _p5) {
-		var _p6 = _p5;
+	function (logMessage, _p6) {
+		var _p7 = _p6;
 		return _psandahl$count_down$GameLog$GameLog(
 			A2(
 				_elm_lang$core$List$take,
@@ -14315,14 +14328,15 @@ var _psandahl$count_down$GameLog$add = F2(
 				{
 					ctor: '::',
 					_0: _psandahl$count_down$GameLog$entry(logMessage),
-					_1: _p6._0
+					_1: _p7._0
 				}));
 	});
 var _psandahl$count_down$GameLog$SadMessage = function (a) {
 	return {ctor: 'SadMessage', _0: a};
 };
-var _psandahl$count_down$GameLog$lose = function (rand) {
-	var xs = _elm_lang$core$Array$fromList(
+var _psandahl$count_down$GameLog$lose = A2(
+	_psandahl$count_down$GameLog$genMessage,
+	_elm_lang$core$Array$fromList(
 		{
 			ctor: '::',
 			_0: 'Noes!',
@@ -14339,23 +14353,14 @@ var _psandahl$count_down$GameLog$lose = function (rand) {
 					}
 				}
 			}
-		});
-	var index = A2(
-		_elm_lang$core$Basics_ops['%'],
-		rand,
-		_elm_lang$core$Array$length(xs));
-	var _p7 = A2(_elm_lang$core$Array$get, index, xs);
-	if (_p7.ctor === 'Just') {
-		return _psandahl$count_down$GameLog$SadMessage(_p7._0);
-	} else {
-		return _psandahl$count_down$GameLog$SadMessage('You should never see this!');
-	}
-};
+		}),
+	_psandahl$count_down$GameLog$SadMessage);
 var _psandahl$count_down$GameLog$Greeting = function (a) {
 	return {ctor: 'Greeting', _0: a};
 };
-var _psandahl$count_down$GameLog$gratz = function (rand) {
-	var xs = _elm_lang$core$Array$fromList(
+var _psandahl$count_down$GameLog$gratz = A2(
+	_psandahl$count_down$GameLog$genMessage,
+	_elm_lang$core$Array$fromList(
 		{
 			ctor: '::',
 			_0: 'Nice!',
@@ -14380,20 +14385,11 @@ var _psandahl$count_down$GameLog$gratz = function (rand) {
 					}
 				}
 			}
-		});
-	var index = A2(
-		_elm_lang$core$Basics_ops['%'],
-		rand,
-		_elm_lang$core$Array$length(xs));
-	var _p8 = A2(_elm_lang$core$Array$get, index, xs);
-	if (_p8.ctor === 'Just') {
-		return _psandahl$count_down$GameLog$Greeting(_p8._0);
-	} else {
-		return _psandahl$count_down$GameLog$Greeting('You should never see this!');
-	}
-};
-var _psandahl$count_down$GameLog$win = function (rand) {
-	var xs = _elm_lang$core$Array$fromList(
+		}),
+	_psandahl$count_down$GameLog$Greeting);
+var _psandahl$count_down$GameLog$win = A2(
+	_psandahl$count_down$GameLog$genMessage,
+	_elm_lang$core$Array$fromList(
 		{
 			ctor: '::',
 			_0: 'Hey, you won!',
@@ -14402,18 +14398,8 @@ var _psandahl$count_down$GameLog$win = function (rand) {
 				_0: 'The winner takes it all!',
 				_1: {ctor: '[]'}
 			}
-		});
-	var index = A2(
-		_elm_lang$core$Basics_ops['%'],
-		rand,
-		_elm_lang$core$Array$length(xs));
-	var _p9 = A2(_elm_lang$core$Array$get, index, xs);
-	if (_p9.ctor === 'Just') {
-		return _psandahl$count_down$GameLog$Greeting(_p9._0);
-	} else {
-		return _psandahl$count_down$GameLog$Greeting('You should never see this!');
-	}
-};
+		}),
+	_psandahl$count_down$GameLog$Greeting);
 var _psandahl$count_down$GameLog$InfoMessage = function (a) {
 	return {ctor: 'InfoMessage', _0: a};
 };
