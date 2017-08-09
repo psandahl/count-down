@@ -10,8 +10,6 @@ module Game.UserInput
         , setGoDown
         )
 
-import Keys exposing (Key)
-
 
 type alias UserInput =
     { zoomIn : Bool

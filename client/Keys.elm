@@ -28,6 +28,18 @@ fromKeyCode code =
         40 ->
             Down
 
+        65 ->
+            Left
+
+        68 ->
+            Right
+
+        83 ->
+            Down
+
+        87 ->
+            Up
+
         107 ->
             Plus
 
