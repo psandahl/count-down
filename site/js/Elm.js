@@ -13460,25 +13460,25 @@ var _psandahl$count_down$Game_Level$boardStuff = function (index) {
 				ctor: '::',
 				_0: {
 					ctor: '_Tuple3',
-					_0: _psandahl$count_down$Game_Types$BoardWidth(11),
-					_1: _psandahl$count_down$Game_Types$GameWidth(10),
-					_2: 20
+					_0: _psandahl$count_down$Game_Types$BoardWidth(9),
+					_1: _psandahl$count_down$Game_Types$GameWidth(8),
+					_2: 16
 				},
 				_1: {
 					ctor: '::',
 					_0: {
 						ctor: '_Tuple3',
-						_0: _psandahl$count_down$Game_Types$BoardWidth(16),
-						_1: _psandahl$count_down$Game_Types$GameWidth(15),
-						_2: 30
+						_0: _psandahl$count_down$Game_Types$BoardWidth(12),
+						_1: _psandahl$count_down$Game_Types$GameWidth(11),
+						_2: 22
 					},
 					_1: {
 						ctor: '::',
 						_0: {
 							ctor: '_Tuple3',
-							_0: _psandahl$count_down$Game_Types$BoardWidth(21),
-							_1: _psandahl$count_down$Game_Types$GameWidth(20),
-							_2: 40
+							_0: _psandahl$count_down$Game_Types$BoardWidth(15),
+							_1: _psandahl$count_down$Game_Types$GameWidth(14),
+							_2: 28
 						},
 						_1: {
 							ctor: '::',
@@ -13546,7 +13546,7 @@ var _psandahl$count_down$Game_Level$Details = F6(
 var _psandahl$count_down$Game_Level$Level = function (a) {
 	return {ctor: 'Level', _0: a};
 };
-var _psandahl$count_down$Game_Level$init = _psandahl$count_down$Game_Level$Level(1);
+var _psandahl$count_down$Game_Level$init = _psandahl$count_down$Game_Level$Level(9);
 var _psandahl$count_down$Game_Level$next = function (_p4) {
 	var _p5 = _p4;
 	return _psandahl$count_down$Game_Level$Level(_p5._0 + 1);

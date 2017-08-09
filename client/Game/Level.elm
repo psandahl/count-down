@@ -100,10 +100,10 @@ boardStuff index =
         stuff =
             Array.fromList
                 [ ( BoardWidth 6, GameWidth 5, 10 )
-                , ( BoardWidth 11, GameWidth 10, 20 )
-                , ( BoardWidth 16, GameWidth 15, 30 )
-                , ( BoardWidth 21, GameWidth 20, 40 )
-                , ( BoardWidth 26, GameWidth 25, 50 )
+                , ( BoardWidth 9, GameWidth 8, 16 )
+                , ( BoardWidth 12, GameWidth 11, 22 )
+                , ( BoardWidth 15, GameWidth 14, 28 )
+                , ( BoardWidth 18, GameWidth 17, 34 )
                 ]
     in
         Maybe.withDefault ( BoardWidth 26, GameWidth 25, 50 ) <| Array.get index stuff
