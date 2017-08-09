@@ -1,4 +1,4 @@
-module Types exposing (State(..), Model, Msg(..))
+module Types exposing (State(..), Model, Msg(..), Progress(..))
 
 {-| The runtime state of the application.
 -}
@@ -21,13 +21,21 @@ type
     -- The state before things are initialized.
     = Null
       -- Initialization done. Ready for playing.
-    | ReadyForPlay Level
+    | ReadyForPlay Progress Level
       -- Ongoing game.
     | Playing Level
       -- The game is over.
     | GameOver
       -- Some catastrofic error.
     | Error String
+
+
+{-| The progress at start of new game. Level up to next level or replay
+the current level.
+-}
+type Progress
+    = LevelUp
+    | Replay
 
 
 {-| The application's model.

@@ -18,7 +18,7 @@ import Mouse
 import Random
 import Task
 import Time
-import Types exposing (State(..), Model, Msg(..))
+import Types exposing (State(..), Model, Msg(..), Progress(..))
 import WebGL.Texture as Texture
 
 
@@ -58,7 +58,7 @@ update msg model =
                 Ok ts ->
                     ( { model
                         | textures = Array.fromList ts
-                        , state = ReadyForPlay Level.init
+                        , state = ReadyForPlay LevelUp Level.init
                         , gameLog =
                             GameLog.add (InfoMessage "Welcome to 3 - 2 - 1!") model.gameLog
                       }
@@ -167,7 +167,7 @@ advanceGame ( a, b ) game model =
                 { model
                     | game = Nothing
                     , points = model.points + p
-                    , state = ReadyForPlay <| Level.next thisLevel
+                    , state = ReadyForPlay LevelUp <| Level.next thisLevel
                     , gameLog = GameLog.add (GameLog.win b) model.gameLog
                 }
 
@@ -177,7 +177,7 @@ advanceGame ( a, b ) game model =
                         | game = Nothing
                         , points = model.points + p
                         , lives = model.lives - 1
-                        , state = ReadyForPlay thisLevel
+                        , state = ReadyForPlay Replay thisLevel
                         , gameLog = GameLog.add (GameLog.lose b) model.gameLog
                     }
                 else
@@ -194,8 +194,8 @@ view : Model -> Html Msg
 view model =
     Html.div [ Attr.class "container" ]
         [ case model.state of
-            ReadyForPlay level ->
-                viewSplash level model
+            ReadyForPlay progress level ->
+                viewSplash progress level model
 
             Playing level ->
                 case model.game of
@@ -216,17 +216,20 @@ view model =
         ]
 
 
-viewSplash : Level -> Model -> Html Msg
-viewSplash level model =
+viewSplash : Progress -> Level -> Model -> Html Msg
+viewSplash progress level model =
     Html.div [ Attr.class "splash" ]
         [ Html.p
             [ Attr.class "splash"
             , Events.onClick <| StartNewGame level
             ]
             [ Html.text <|
-                "Ready for level "
+                (if progress == LevelUp then
+                    "Play level: "
+                 else
+                    "Argh! Replay level: "
+                )
                     ++ (toString <| Level.asInt level)
-                    ++ "?"
             ]
         , viewSplashHUD model
         , GameLog.view model.gameLog

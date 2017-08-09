@@ -13484,9 +13484,9 @@ var _psandahl$count_down$Game_Level$boardStuff = function (index) {
 							ctor: '::',
 							_0: {
 								ctor: '_Tuple3',
-								_0: _psandahl$count_down$Game_Types$BoardWidth(26),
-								_1: _psandahl$count_down$Game_Types$GameWidth(25),
-								_2: 50
+								_0: _psandahl$count_down$Game_Types$BoardWidth(18),
+								_1: _psandahl$count_down$Game_Types$GameWidth(17),
+								_2: 34
 							},
 							_1: {ctor: '[]'}
 						}
@@ -13546,7 +13546,7 @@ var _psandahl$count_down$Game_Level$Details = F6(
 var _psandahl$count_down$Game_Level$Level = function (a) {
 	return {ctor: 'Level', _0: a};
 };
-var _psandahl$count_down$Game_Level$init = _psandahl$count_down$Game_Level$Level(9);
+var _psandahl$count_down$Game_Level$init = _psandahl$count_down$Game_Level$Level(1);
 var _psandahl$count_down$Game_Level$next = function (_p4) {
 	var _p5 = _p4;
 	return _psandahl$count_down$Game_Level$Level(_p5._0 + 1);
@@ -14446,10 +14446,13 @@ var _psandahl$count_down$Types$GameOver = {ctor: 'GameOver'};
 var _psandahl$count_down$Types$Playing = function (a) {
 	return {ctor: 'Playing', _0: a};
 };
-var _psandahl$count_down$Types$ReadyForPlay = function (a) {
-	return {ctor: 'ReadyForPlay', _0: a};
-};
+var _psandahl$count_down$Types$ReadyForPlay = F2(
+	function (a, b) {
+		return {ctor: 'ReadyForPlay', _0: a, _1: b};
+	});
 var _psandahl$count_down$Types$Null = {ctor: 'Null'};
+var _psandahl$count_down$Types$Replay = {ctor: 'Replay'};
+var _psandahl$count_down$Types$LevelUp = {ctor: 'LevelUp'};
 var _psandahl$count_down$Types$KeyReleased = function (a) {
 	return {ctor: 'KeyReleased', _0: a};
 };
@@ -14745,8 +14748,8 @@ var _psandahl$count_down$Main$viewGame = F3(
 				}
 			});
 	});
-var _psandahl$count_down$Main$viewSplash = F2(
-	function (level, model) {
+var _psandahl$count_down$Main$viewSplash = F3(
+	function (progress, level, model) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -14773,12 +14776,9 @@ var _psandahl$count_down$Main$viewSplash = F2(
 						_0: _elm_lang$html$Html$text(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								'Ready for level ',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(
-										_psandahl$count_down$Game_Level$asInt(level)),
-									'?'))),
+								_elm_lang$core$Native_Utils.eq(progress, _psandahl$count_down$Types$LevelUp) ? 'Play level: ' : 'Argh! Replay level: ',
+								_elm_lang$core$Basics$toString(
+									_psandahl$count_down$Game_Level$asInt(level)))),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -14806,7 +14806,7 @@ var _psandahl$count_down$Main$view = function (model) {
 				var _p4 = model.state;
 				switch (_p4.ctor) {
 					case 'ReadyForPlay':
-						return A2(_psandahl$count_down$Main$viewSplash, _p4._0, model);
+						return A3(_psandahl$count_down$Main$viewSplash, _p4._0, _p4._1, model);
 					case 'Playing':
 						var _p5 = model.game;
 						if (_p5.ctor === 'Just') {
@@ -14856,7 +14856,9 @@ var _psandahl$count_down$Main$advanceGame = F3(
 					{
 						game: _elm_lang$core$Maybe$Nothing,
 						points: model.points + _p9._0,
-						state: _psandahl$count_down$Types$ReadyForPlay(
+						state: A2(
+							_psandahl$count_down$Types$ReadyForPlay,
+							_psandahl$count_down$Types$LevelUp,
 							_psandahl$count_down$Game_Level$next(thisLevel)),
 						gameLog: A2(
 							_psandahl$count_down$GameLog$add,
@@ -14871,7 +14873,7 @@ var _psandahl$count_down$Main$advanceGame = F3(
 						game: _elm_lang$core$Maybe$Nothing,
 						points: model.points + _p11,
 						lives: model.lives - 1,
-						state: _psandahl$count_down$Types$ReadyForPlay(thisLevel),
+						state: A2(_psandahl$count_down$Types$ReadyForPlay, _psandahl$count_down$Types$Replay, thisLevel),
 						gameLog: A2(
 							_psandahl$count_down$GameLog$add,
 							_psandahl$count_down$GameLog$lose(_p12),
@@ -14903,7 +14905,7 @@ var _psandahl$count_down$Main$update = F2(
 							model,
 							{
 								textures: _elm_lang$core$Array$fromList(_p14._0),
-								state: _psandahl$count_down$Types$ReadyForPlay(_psandahl$count_down$Game_Level$init),
+								state: A2(_psandahl$count_down$Types$ReadyForPlay, _psandahl$count_down$Types$LevelUp, _psandahl$count_down$Game_Level$init),
 								gameLog: A2(
 									_psandahl$count_down$GameLog$add,
 									_psandahl$count_down$GameLog$InfoMessage('Welcome to 3 - 2 - 1!'),
