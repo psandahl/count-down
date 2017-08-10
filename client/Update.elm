@@ -19,8 +19,6 @@ update msg model =
                     ( { model
                         | textures = Array.fromList ts
                         , state = Loaded
-                        , gameLog =
-                            GameLog.add (InfoMessage "Welcome to 3 - 2 - 1!") model.gameLog
                       }
                     , Cmd.none
                     )
@@ -55,6 +53,10 @@ update msg model =
         Start ->
             ( { model
                 | game = Just <| Game.new Level.init model.meshStore model.textures
+                , lives = 3
+                , points = 0
+                , gameLog =
+                    GameLog.add (InfoMessage "Welcome to 3 - 2 - 1!") <| GameLog.init
                 , state = Playing Level.init
               }
             , Cmd.none

@@ -51,7 +51,7 @@ viewStart =
                 [ Html.text "-= Count Down 3 - 2 - 1 =-"
                 ]
             , Html.p []
-                [ Html.text "Navigate the marker using arrow keys (or W-A-S-D) and stop the counters."
+                [ Html.text "Navigate the marker using arrow keys (or W-A-S-D) to stop the counters."
                 ]
             , Html.p []
                 [ Html.text "You must stop the counters. Three strikes and you're out!" ]
@@ -70,7 +70,19 @@ viewStart =
 viewGameOver : Model -> Html Msg
 viewGameOver model =
     Html.div [ Attr.class "gameover" ]
-        []
+        [ Html.div [ Attr.class "info" ]
+            [ Html.h1 [ Attr.class "info" ]
+                [ Html.text "Game Over!"
+                ]
+            , Html.p
+                [ Attr.class "infoprompt"
+                , Events.onClick Start
+                ]
+                [ Html.text "Start from the beginning?"
+                ]
+            ]
+        , viewSplashHUD model
+        ]
 
 
 {-| The splash screen shown in between levels.
