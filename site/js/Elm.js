@@ -14848,6 +14848,14 @@ var _psandahl$count_down$View$viewGame = F3(
 				}
 			});
 	});
+var _psandahl$count_down$View$infoLabel = function (progress) {
+	var _p0 = progress;
+	if (_p0.ctor === 'LevelUp') {
+		return 'Gratz! Level up.';
+	} else {
+		return 'Oops! Try again.';
+	}
+};
 var _psandahl$count_down$View$viewSplash = F3(
 	function (progress, level, model) {
 		return A2(
@@ -14860,26 +14868,53 @@ var _psandahl$count_down$View$viewSplash = F3(
 			{
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$p,
+					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('splash'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(
-								_psandahl$count_down$Types$StartNewGame(level)),
-							_1: {ctor: '[]'}
-						}
+						_0: _elm_lang$html$Html_Attributes$class('info'),
+						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Native_Utils.eq(progress, _psandahl$count_down$Types$LevelUp) ? 'Play level: ' : 'Argh! Replay level: ',
-								_elm_lang$core$Basics$toString(
-									_psandahl$count_down$Game_Level$asInt(level)))),
-						_1: {ctor: '[]'}
+						_0: A2(
+							_elm_lang$html$Html$h1,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('info'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_psandahl$count_down$View$infoLabel(progress)),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$p,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('infoprompt'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(
+											_psandahl$count_down$Types$StartNewGame(level)),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'Play level: ',
+											_elm_lang$core$Basics$toString(
+												_psandahl$count_down$Game_Level$asInt(level)))),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}),
 				_1: {
 					ctor: '::',
@@ -14929,7 +14964,7 @@ var _psandahl$count_down$View$viewStart = A2(
 						{ctor: '[]'},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text('Navigate marker with arrow keys or W-A-S-D and stop counters.'),
+							_0: _elm_lang$html$Html$text('Navigate the marker using arrow keys (or W-A-S-D) and stop the counters.'),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -14989,23 +15024,23 @@ var _psandahl$count_down$View$view = function (model) {
 		{
 			ctor: '::',
 			_0: function () {
-				var _p0 = model.state;
-				switch (_p0.ctor) {
+				var _p1 = model.state;
+				switch (_p1.ctor) {
 					case 'Loaded':
 						return _psandahl$count_down$View$viewStart;
 					case 'ReadyForPlay':
-						return A3(_psandahl$count_down$View$viewSplash, _p0._0, _p0._1, model);
+						return A3(_psandahl$count_down$View$viewSplash, _p1._0, _p1._1, model);
 					case 'Playing':
-						var _p1 = model.game;
-						if (_p1.ctor === 'Just') {
-							return A3(_psandahl$count_down$View$viewGame, _p0._0, _p1._0, model);
+						var _p2 = model.game;
+						if (_p2.ctor === 'Just') {
+							return A3(_psandahl$count_down$View$viewGame, _p1._0, _p2._0, model);
 						} else {
 							return _psandahl$count_down$View$viewError('Error: No game. How strange ...');
 						}
 					case 'GameOver':
 						return _psandahl$count_down$View$viewError('Game Over!');
 					case 'Error':
-						return _psandahl$count_down$View$viewError(_p0._0);
+						return _psandahl$count_down$View$viewError(_p1._0);
 					default:
 						return _psandahl$count_down$View$viewError('Loading ...');
 				}

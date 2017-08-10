@@ -115,9 +115,9 @@ div.leftoverlay {
 */
 div.gamelog {
   position: absolute;
-  font-size: x-large;
-  width: 250px;
-  left: 750px;
+  font-size: large;
+  width: 210px;
+  left: 800px;
   top: 10px;
   background-color: rgba(32, 74, 135, 0.2);
   color: #d3d7cf;

@@ -51,7 +51,7 @@ viewStart =
                 [ Html.text "-= Count Down 3 - 2 - 1 =-"
                 ]
             , Html.p []
-                [ Html.text "Navigate marker with arrow keys or W-A-S-D and stop counters."
+                [ Html.text "Navigate the marker using arrow keys (or W-A-S-D) and stop the counters."
                 ]
             , Html.p []
                 [ Html.text "You must stop the counters. Three strikes and you're out!" ]
@@ -72,21 +72,30 @@ viewStart =
 viewSplash : Progress -> Level -> Model -> Html Msg
 viewSplash progress level model =
     Html.div [ Attr.class "splash" ]
-        [ Html.p
-            [ Attr.class "splash"
-            , Events.onClick <| StartNewGame level
-            ]
-            [ Html.text <|
-                (if progress == LevelUp then
-                    "Play level: "
-                 else
-                    "Argh! Replay level: "
-                )
-                    ++ (toString <| Level.asInt level)
+        [ Html.div [ Attr.class "info" ]
+            [ Html.h1 [ Attr.class "info" ]
+                [ Html.text <| infoLabel progress
+                ]
+            , Html.p
+                [ Attr.class "infoprompt"
+                , Events.onClick <| StartNewGame level
+                ]
+                [ Html.text <| "Play level: " ++ toString (Level.asInt level)
+                ]
             ]
         , viewSplashHUD model
         , GameLog.view model.gameLog
         ]
+
+
+infoLabel : Progress -> String
+infoLabel progress =
+    case progress of
+        LevelUp ->
+            "Gratz! Level up."
+
+        _ ->
+            "Oops! Try again."
 
 
 {-| The active game.
