@@ -14927,6 +14927,16 @@ var _psandahl$count_down$View$viewSplash = F3(
 				}
 			});
 	});
+var _psandahl$count_down$View$viewGameOver = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('gameover'),
+			_1: {ctor: '[]'}
+		},
+		{ctor: '[]'});
+};
 var _psandahl$count_down$View$viewStart = A2(
 	_elm_lang$html$Html$div,
 	{
@@ -15038,7 +15048,7 @@ var _psandahl$count_down$View$view = function (model) {
 							return _psandahl$count_down$View$viewError('Error: No game. How strange ...');
 						}
 					case 'GameOver':
-						return _psandahl$count_down$View$viewError('Game Over!');
+						return _psandahl$count_down$View$viewGameOver(model);
 					case 'Error':
 						return _psandahl$count_down$View$viewError(_p1._0);
 					default:

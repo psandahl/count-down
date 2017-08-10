@@ -33,7 +33,7 @@ view model =
                         viewError "Error: No game. How strange ..."
 
             GameOver ->
-                viewError "Game Over!"
+                viewGameOver model
 
             Error msg ->
                 viewError msg
@@ -65,6 +65,12 @@ viewStart =
                 ]
             ]
         ]
+
+
+viewGameOver : Model -> Html Msg
+viewGameOver model =
+    Html.div [ Attr.class "gameover" ]
+        []
 
 
 {-| The splash screen shown in between levels.
