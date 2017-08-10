@@ -36,11 +36,11 @@ div.splash {
 }
 
 /*
-  Splash screen message.
+  Splash screen message prompt.
 */
 p.splash {
   position: relative;
-  color: yellow;
+  color: #edd400;
   top: 50%;
   font-family: sans-serif;
   font-size: x-large;
@@ -49,6 +49,35 @@ p.splash {
 }
 
 p.splash:hover {
+  color: #fce94f;
+  font-weight: bold;
+}
+
+/*
+  Info div.
+*/
+div.info {
+  position: relative;
+  font-family: sans-serif;
+  font-size: x-large;
+  text-align: center;
+  color: #d3d7cf;
+  top: 40%;
+  border-color: rgba(0, 0, 255, 0.3);
+  border-style: solid;
+}
+
+h1.info {
+  color: #babdb6;
+}
+
+p.infoprompt {
+  color: #edd400;
+  cursor: pointer;
+}
+
+p.infoprompt:hover {
+  color: #fce94f;
   font-weight: bold;
 }
 
@@ -72,7 +101,7 @@ div.leftoverlay {
   left: 10px;
   top: 10px;
   background-color: rgba(105, 105, 105, 0.3);
-  color: white;
+  color: #d3d7cf;
   border-color: rgba(0, 0, 255, 0.3);
   border-style: solid;
   font-family: monospace;
@@ -87,7 +116,7 @@ div.gamelog {
   left: 800px;
   top: 10px;
   background-color: rgba(105, 105, 105, 0.3);
-  color: white;
+  color: #d3d7cf;
   border-color: rgba(0, 0, 255, 0.3);
   border-style: solid;
   font-family: monospace;

@@ -20,7 +20,9 @@ type
     State
     -- The state before things are initialized.
     = Null
-      -- Initialization done. Ready for playing.
+      -- All resources are loaded.
+    | Loaded
+      -- Initialization done. Ready for play.
     | ReadyForPlay Progress Level
       -- Ongoing game.
     | Playing Level
@@ -86,6 +88,8 @@ type
     | TimeTick ( Int, Int )
       -- Time difference in fractions of s since the last animation event.
     | Animate Time
+      -- Start the game for the first time.
+    | Start
       -- Request to start a new game.
     | StartNewGame Level
       -- The mouse button is pressed.

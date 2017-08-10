@@ -18,7 +18,7 @@ update msg model =
                 Ok ts ->
                     ( { model
                         | textures = Array.fromList ts
-                        , state = ReadyForPlay LevelUp Level.init
+                        , state = Loaded
                         , gameLog =
                             GameLog.add (InfoMessage "Welcome to 3 - 2 - 1!") model.gameLog
                       }
@@ -48,6 +48,14 @@ update msg model =
             ( { model
                 | game = Maybe.map (Game.animate diff) model.game
                 , timeDiff = diff
+              }
+            , Cmd.none
+            )
+
+        Start ->
+            ( { model
+                | game = Just <| Game.new Level.init model.meshStore model.textures
+                , state = Playing Level.init
               }
             , Cmd.none
             )

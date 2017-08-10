@@ -18,6 +18,9 @@ view : Model -> Html Msg
 view model =
     Html.div [ Attr.class "container" ]
         [ case model.state of
+            Loaded ->
+                viewStart
+
             ReadyForPlay progress level ->
                 viewSplash progress level model
 
@@ -40,6 +43,32 @@ view model =
         ]
 
 
+viewStart : Html Msg
+viewStart =
+    Html.div [ Attr.class "splash" ]
+        [ Html.div [ Attr.class "info" ]
+            [ Html.h1 [ Attr.class "info" ]
+                [ Html.text "-= Count Down 3 - 2 - 1 =-"
+                ]
+            , Html.p []
+                [ Html.text "Navigate marker with arrow keys or W-A-S-D and stop counters."
+                ]
+            , Html.p []
+                [ Html.text "You must stop the counters. Three strikes and you're out!" ]
+            , Html.p []
+                [ Html.text "(Zoom using +/-, move camera with mouse)" ]
+            , Html.p
+                [ Attr.class "infoprompt"
+                , Events.onClick Start
+                ]
+                [ Html.text "Let's go!"
+                ]
+            ]
+        ]
+
+
+{-| The splash screen shown in between levels.
+-}
 viewSplash : Progress -> Level -> Model -> Html Msg
 viewSplash progress level model =
     Html.div [ Attr.class "splash" ]
@@ -60,6 +89,8 @@ viewSplash progress level model =
         ]
 
 
+{-| The active game.
+-}
 viewGame : Level -> Game -> Model -> Html Msg
 viewGame level game model =
     Html.div []
