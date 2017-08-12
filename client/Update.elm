@@ -126,11 +126,7 @@ advanceGame ( a, b ) game model =
                 { model
                     | game = Just newGame
                     , points = model.points + p
-                    , gameLog =
-                        if p > 0 then
-                            GameLog.add (GameLog.gratz b) model.gameLog
-                        else
-                            model.gameLog
+                    , gameLog = GameLog.countDown newGame.timeLeft model.gameLog
                 }
 
             Won p ->

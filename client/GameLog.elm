@@ -5,13 +5,14 @@ module GameLog
         , init
         , add
         , view
-        , gratz
         , win
         , lose
+        , countDown
         )
 
 import Array exposing (Array)
 import Array
+import Game.Types exposing (Seconds)
 import Html exposing (Html)
 import Html
 import Html.Attributes as Attr
@@ -57,24 +58,13 @@ view (GameLog xs) =
         )
 
 
-{-| Generate a gratz message using the random seed.
--}
-gratz : Int -> LogMessage
-gratz =
-    genMessage
-        (Array.fromList
-            [ "Nice!", "Great!", "Wow!", "Gratz!", "Yay!", ":-)" ]
-        )
-        Greeting
-
-
 {-| Generate a win message using the random seed.
 -}
 win : Int -> LogMessage
 win =
     genMessage
         (Array.fromList
-            [ "Hey, you won!", "The winner takes it all!" ]
+            [ "Well done!", "Gratz!", ":-)" ]
         )
         Greeting
 
@@ -85,9 +75,19 @@ lose : Int -> LogMessage
 lose =
     genMessage
         (Array.fromList
-            [ "Noes!", "F*ck!", "What are you doing?", ":-(" ]
+            [ "Oh noes!", "Lost that one.", ":-(" ]
         )
         SadMessage
+
+
+{-| Add a count down message.
+-}
+countDown : Seconds -> GameLog -> GameLog
+countDown timeLeft gameLog =
+    if timeLeft < 4 then
+        add (InfoMessage <| toString timeLeft) gameLog
+    else
+        gameLog
 
 
 genMessage : Array String -> (String -> LogMessage) -> Int -> LogMessage
