@@ -15059,29 +15059,59 @@ var _psandahl$count_down$View$view = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: function () {
-				var _p1 = model.state;
-				switch (_p1.ctor) {
-					case 'Loaded':
-						return _psandahl$count_down$View$viewStart;
-					case 'ReadyForPlay':
-						return A3(_psandahl$count_down$View$viewSplash, _p1._0, _p1._1, model);
-					case 'Playing':
-						var _p2 = model.game;
-						if (_p2.ctor === 'Just') {
-							return A3(_psandahl$count_down$View$viewGame, _p1._0, _p2._0, model);
-						} else {
-							return _psandahl$count_down$View$viewError('Error: No game. How strange ...');
-						}
-					case 'GameOver':
-						return _psandahl$count_down$View$viewGameOver(model);
-					case 'Error':
-						return _psandahl$count_down$View$viewError(_p1._0);
-					default:
-						return _psandahl$count_down$View$viewError('Loading ...');
-				}
-			}(),
-			_1: {ctor: '[]'}
+			_0: A2(
+				_elm_lang$html$Html$audio,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$autoplay(true),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$loop(true),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$source,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$src('music/song.mp3'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$type_('audio/mpeg'),
+								_1: {ctor: '[]'}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: function () {
+					var _p1 = model.state;
+					switch (_p1.ctor) {
+						case 'Loaded':
+							return _psandahl$count_down$View$viewStart;
+						case 'ReadyForPlay':
+							return A3(_psandahl$count_down$View$viewSplash, _p1._0, _p1._1, model);
+						case 'Playing':
+							var _p2 = model.game;
+							if (_p2.ctor === 'Just') {
+								return A3(_psandahl$count_down$View$viewGame, _p1._0, _p2._0, model);
+							} else {
+								return _psandahl$count_down$View$viewError('Error: No game. How strange ...');
+							}
+						case 'GameOver':
+							return _psandahl$count_down$View$viewGameOver(model);
+						case 'Error':
+							return _psandahl$count_down$View$viewError(_p1._0);
+						default:
+							return _psandahl$count_down$View$viewError('Loading ...');
+					}
+				}(),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 

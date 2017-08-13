@@ -24,6 +24,9 @@ main =
         -- Serving (PNG) texture files.
         get "/texture/:file" $ textureFile =<< param "file"
 
+        -- Serving (MP3) music files.
+        get "/music/:file" $ musicFile =<< param "file"
+
 startPage :: ActionM ()
 startPage = do
     setHeader "Content-Type" "text/html; charset=utf-8"
@@ -48,3 +51,8 @@ textureFile :: FilePath -> ActionM ()
 textureFile texture = do
     setHeader "Content-Type" "image/png"
     file $ "site" </> "texture" </> texture
+
+musicFile :: FilePath -> ActionM ()
+musicFile music = do
+    setHeader "Content-Type" "audio/mpeg"
+    file $ "site" </> "music" </> music

@@ -17,7 +17,9 @@ import Types exposing (Msg(..), Model, State(..), Progress(..))
 view : Model -> Html Msg
 view model =
     Html.div [ Attr.class "container" ]
-        [ case model.state of
+        [ Html.audio [ Attr.autoplay True, Attr.loop True ]
+            [ Html.source [ Attr.src "music/song.mp3", Attr.type_ "audio/mpeg" ] [] ]
+        , case model.state of
             Loaded ->
                 viewStart
 
