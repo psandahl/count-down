@@ -28,6 +28,8 @@ type
     | Playing Level
       -- The game is over.
     | GameOver
+      -- The player has won the game.
+    | Victory
       -- Some catastrofic error.
     | Error String
 

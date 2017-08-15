@@ -4,6 +4,7 @@ module Game.Level
         , Details
         , init
         , next
+        , isLast
         , details
         , asInt
         )
@@ -51,6 +52,13 @@ init =
 next : Level -> Level
 next (Level n) =
     Level <| n + 1
+
+
+{-| Tell if the level is the last supported level.
+-}
+isLast : Level -> Bool
+isLast (Level n) =
+    n >= 15
 
 
 {-| Get the details for the Level.

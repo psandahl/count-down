@@ -133,7 +133,11 @@ advanceGame ( a, b ) game model =
                 { model
                     | game = Nothing
                     , points = model.points + p
-                    , state = ReadyForPlay LevelUp <| Level.next thisLevel
+                    , state =
+                        if not (Level.isLast thisLevel) then
+                            ReadyForPlay LevelUp <| Level.next thisLevel
+                        else
+                            Victory
                     , gameLog = GameLog.add (GameLog.win b) model.gameLog
                 }
 

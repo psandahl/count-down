@@ -37,6 +37,9 @@ view model =
             GameOver ->
                 viewGameOver model
 
+            Victory ->
+                viewVictory model
+
             Error msg ->
                 viewError msg
 
@@ -84,6 +87,25 @@ viewGameOver model =
                 ]
             ]
         , viewSplashHUD model
+        ]
+
+
+viewVictory : Model -> Html Msg
+viewVictory model =
+    Html.div [ Attr.class "victory" ]
+        [ Html.div [ Attr.class "info" ]
+            [ Html.h1 [ Attr.class "info" ]
+                [ Html.text "Victory!" ]
+            , Html.p []
+                [ Html.text <| "You earned " ++ toString model.points ++ " points!"
+                ]
+            , Html.p
+                [ Attr.class "infoprompt"
+                , Events.onClick Start
+                ]
+                [ Html.text "Start from the beginning?"
+                ]
+            ]
         ]
 
 
