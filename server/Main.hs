@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
+import           Data.Text.Lazy  (Text)
 import           System.EasyFile ((</>))
 import           Web.Scotty
 
@@ -13,46 +14,27 @@ main =
         get "/" $ redirect "/index.html"
 
         -- Serving local JavaScript.
-        get "/js/:file" $ scriptFile =<< param "file"
+        get "/js/:file" $
+            serveFile "js" "application/javascript; charset=utf-8" =<< param "file"
 
         -- Serving local CSS.
-        get "/css/:file" $ cssFile =<< param "file"
+        get "/css/:file" $ serveFile "css" "text/css; charset=utf-8" =<< param "file"
 
         -- Serving (PNG) image files.
-        get "/image/:file" $ imageFile =<< param "file"
+        get "/image/:file" $ serveFile "image" "image/png" =<< param "file"
 
         -- Serving (PNG) texture files.
-        get "/texture/:file" $ textureFile =<< param "file"
+        get "/texture/:file" $ serveFile "texture" "image/png" =<< param "file"
 
         -- Serving (MP3) music files.
-        get "/music/:file" $ musicFile =<< param "file"
+        get "/music/:file" $ serveFile "music" "audio/mpeg" =<< param "file"
 
 startPage :: ActionM ()
 startPage = do
     setHeader "Content-Type" "text/html; charset=utf-8"
     file $ "site" </> "index.html"
 
-scriptFile :: FilePath -> ActionM ()
-scriptFile script = do
-    setHeader "Content-Type" "application/javascript; charset=utf-8"
-    file $ "site" </> "js" </> script
-
-cssFile :: FilePath -> ActionM ()
-cssFile css = do
-    setHeader "Content-Type" "text/css; charset=utf-8"
-    file $ "site" </> "css" </> css
-
-imageFile :: FilePath -> ActionM ()
-imageFile image = do
-    setHeader "Content-Type" "image/png"
-    file $ "site" </> "image" </> image
-
-textureFile :: FilePath -> ActionM ()
-textureFile texture = do
-    setHeader "Content-Type" "image/png"
-    file $ "site" </> "texture" </> texture
-
-musicFile :: FilePath -> ActionM ()
-musicFile music = do
-    setHeader "Content-Type" "audio/mpeg"
-    file $ "site" </> "music" </> music
+serveFile :: FilePath -> Text -> FilePath -> ActionM ()
+serveFile resDir contentType requestedFile = do
+    setHeader "content-Type" contentType
+    file $ "site" </> resDir </> requestedFile

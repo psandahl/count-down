@@ -20,4 +20,5 @@ executable count-down-server
   build-depends:       base >= 4.7 && < 5
                      , easy-file
                      , scotty
+                     , text
   ghc-options:         -Wall -Werror -O2
