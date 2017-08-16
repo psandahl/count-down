@@ -16,8 +16,7 @@ where your marker will move a little faster for a few seconds.
 If a counter expire you will lose a life and you need to re-play the current
 level. If you lose all your three lives it's game over.
 
-Demo video.
-![Demo video](https://www.youtube.com/watch?v=DhSXR7EaJ5E)
+[Demo video on YouTube](https://www.youtube.com/watch?v=DhSXR7EaJ5E)
 
 ## Build the game server
 
