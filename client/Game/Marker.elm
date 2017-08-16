@@ -342,8 +342,7 @@ fragmentShader =
         vec3 markerColor = vec3(152.0 / 255.0, 1.0, 152.0 / 255.0);
         vec3 lightColor = vec3(1.0, 1.0, 1.0);
         float ambientStrength = 0.9;
-        float specularShine = 64.0;
-        float specularStrength = 1.2;
+        float specularShine = 256.0;
 
         vec3 transformedLightDirection();
         vec3 ambientColor();
@@ -381,6 +380,6 @@ fragmentShader =
             vec3 viewDir = normalize(vec3(0.0) - vPosition); // Eye at 0, 0, 0.
             float specular = pow(min(dot(viewDir, reflectDir), 0.0), specularShine);
 
-            return lightColor * specular * specularStrength;
+            return lightColor * specular;
         }
     |]
